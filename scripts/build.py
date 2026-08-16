@@ -48,7 +48,9 @@ BASE_PATH = ""
 
 def u(path: str) -> str:
     """サイト内リンクを base_path 付きの絶対パスにする。"""
-    return f"{BASE_PATH}/{path.lstrip('/')}" if path != "/" else (BASE_PATH or "/") + "/"
+    if path in ("/", ""):
+        return f"{BASE_PATH}/" if BASE_PATH else "/"
+    return f"{BASE_PATH}/{path.lstrip('/')}"
 
 
 # ────────────────────────────── 読み込み ──────────────────────────────
@@ -520,6 +522,15 @@ def main() -> int:
         f"User-agent: *\nAllow: /\nSitemap: {site['site']['base_url'].rstrip('/')}/sitemap.xml\n",
         encoding="utf-8")
     (PUBLIC / ".nojekyll").write_text("", encoding="utf-8")
+
+    # 独自ドメイン用の CNAME。base_url のホスト名から自動生成する。
+    # GitHub Pages はこのファイルを見て独自ドメインを認識するため、
+    # 成果物に必ず含める必要がある（無いと設定がリセットされる）。
+    from urllib.parse import urlparse as _up
+    host = _up(site["site"]["base_url"]).netloc
+    if host and not host.endswith("github.io"):
+        (PUBLIC / "CNAME").write_text(host + "\n", encoding="utf-8")
+        print(f"■ CNAME: {host}")
 
     print(f"■ 出力 public/ ({len(list(PUBLIC.rglob('*.html')))} ページ)")
 

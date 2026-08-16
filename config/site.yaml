@@ -1,12 +1,12 @@
 site:
-  title: Gadget Signal
-  title_ja: ガジェットシグナル
+  title: Gadget Terminal
+  title_ja: ガジェットターミナル
   tagline: 海外ガジェットの「まだ日本語で読めない話」を、毎日。
   description: スマホ・ウェアラブル、PC/自作、変わり種ガジェット。海外一次ソースを毎日クロールし、日本語で要点だけを届けるガジェットメディア。
-  base_url: https://afrorz.github.io/gadget-signal
+  base_url: https://gadgetterminal.com
   lang: ja
   locale: ja_JP
-  author: 合同会社（運営）
+  author: 合同会社スタープラチナ
   copyright_from: 2026
   posts_per_page: 20
   # 収益化は後回し。有効化するときは true にしてタグを入れる
