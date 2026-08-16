@@ -1,10 +1,10 @@
-# Gadget Terminal / 情報ソース定義
+# Gadget Signal / 情報ソース定義
 # tier: 1=一次情報に近い/速報性が高い  2=標準  3=ネタ枠・補助
 # category: smartphone | pc | weird
 # verified: 2026-08-16 時点で取得を確認したもの
 
 defaults:
-  user_agent: "GadgetTerminalBot/1.0 (+https://gadgetterminal.com; contact: info@gadgetterminal.com)"
+  user_agent: "GadgetSignalBot/1.0 (+https://example.com; contact: afrorz@gmail.com)"
   timeout: 20
   max_items_per_feed: 40
 
@@ -308,39 +308,148 @@ sources:
     lang: en
     note: メーカー公式＝一次情報。
 
+# ── クラウドファンディング収集 ────────────────────────
+# RSSを出していないプラットフォームが多いため、専用の収集方式を使う。
+# scripts/crowdfunding.py が処理する。
+crowdfunding:
+  enabled: true
+  user_agent: "GadgetTerminalBot/1.0 (+https://gadgetterminal.com; contact: info@gadgetterminal.com)"
+  request_interval: 1.2      # 秒。相手サーバに負荷をかけないための待ち
+  max_pages_per_run: 40      # 1回の実行で開くプロジェクトページの上限
+
+  sources:
+    - id: makuake
+      name: Makuake
+      type: sitemap
+      sitemap_index: https://www.makuake.com/sitemap/
+      project_pattern: '^https://www\.makuake\.com/project/[^/]+/$'
+      scan_sitemaps: 2       # 末尾から何枚のサイトマップを見るか
+      tech_filter: true      # 食品・ファッション等を除外する
+      category: weird
+      tier: 1
+      verified: true
+      note: |
+        robots.txt を確認済み（2026-08-16）。/api/ は禁止、/project/ と /sitemap/ は許可。
+        プロジェクトページはサーバー生成なので OGP から題名・説明・画像URLが取れる。
+
+    - id: kickstarter_tech
+      name: Kickstarter（Technology）
+      type: atom
+      url: https://www.kickstarter.com/discover/advanced.atom?category_id=16&sort=newest
+      browser_ua: true
+      limit: 30
+      category: weird
+      tier: 1
+      note: |
+        既定のUAだと 406 を返す。ブラウザ相当のUAで取りに行く。
+        それでも弾かれる場合はこのソースだけスキップされ、他は動き続ける。
+
+    - id: kickstarter_gadgets
+      name: Kickstarter（Gadgets）
+      type: atom
+      url: https://www.kickstarter.com/discover/categories/technology/gadgets.atom?sort=newest
+      browser_ua: true
+      limit: 30
+      category: weird
+      tier: 1
+
+    - id: campfire
+      name: CAMPFIRE
+      type: sitemap
+      sitemap_index: https://camp-fire.jp/sitemap.xml
+      project_pattern: '^https://camp-fire\.jp/projects/\d+/view$'
+      scan_sitemaps: 2
+      tech_filter: true
+      category: weird
+      tier: 2
+      enabled: false
+      note: "未検証。動作を確認できたら enabled を true にする。"
+
+    - id: greenfunding
+      name: GREEN FUNDING
+      type: sitemap
+      sitemap_index: https://greenfunding.jp/sitemap.xml
+      project_pattern: '^https://greenfunding\.jp/[^/]+/projects/\d+$'
+      scan_sitemaps: 2
+      tech_filter: true
+      category: weird
+      tier: 2
+      enabled: false
+      note: "未検証。"
+
 # ── 注目度スコアリング ────────────────────────────────
 # 記事タイトル/要約に含まれるキーワードで加点し、上位を下書き候補に回す
 scoring:
   boost:
-    # 一次情報・確度の高いイベント
-    "official": 3
+    # 製品そのもの（いちばん強く効かせる）
+    "crowdfunding": 6
+    "kickstarter": 6
+    "indiegogo": 6
+    "makuake": 6
+    "backed": 3
+    "campaign": 2
+    "hands-on": 5
+    "teardown": 5
+    "review": 4
+    "benchmark": 4
+    "first look": 4
+    "unveil": 4
     "announced": 3
     "launch": 3
-    "hands-on": 4
-    "review": 3
-    "benchmark": 4
-    "teardown": 4
-    "first look": 3
-    "price": 2
+    "official": 3
+    "price": 3
+    "preorder": 4
+    "pre-order": 4
+    "ships": 3
     "release date": 3
-    # 日本で刺さりやすい固有名詞
-    "japan": 4
-    "snapdragon": 2
-    "pixel": 2
-    "galaxy": 2
-    "steam deck": 3
-    "mini pc": 3
-    "e ink": 3
-    "handheld": 3
-    "keyboard": 2
-    "foldable": 3
+    "specs": 3
+    "prototype": 3
+    # 製品カテゴリ
+    "mini pc": 4
     "single-board": 3
-    "smartwatch": 2
+    "handheld": 4
+    "e ink": 4
+    "foldable": 3
+    "smartwatch": 3
+    "earbuds": 3
+    "keyboard": 3
+    "projector": 3
+    "drone": 3
+    "3d printer": 3
+    "power bank": 3
     "open source": 2
-    "study": 3
-    "failure rate": 3
+    "snapdragon": 2
+    "steam deck": 3
+    "japan": 4
+    # 日本語の手がかり（Makuake等の国内クラファンはタイトルが日本語のため、
+    # 英語の加点語がまったく当たらない。ここで拾う）
+    "応援購入": 6
+    "クラウドファンディング": 6
+    "先行販売": 5
+    "先行予約": 5
+    "世界初": 5
+    "日本初": 5
+    "新登場": 3
+    "誕生": 3
+    "登場": 2
+    "発売": 3
+    "予約受付": 3
+    "プロジェクター": 4
+    "イヤホン": 3
+    "ヘッドホン": 3
+    "スマートウォッチ": 4
+    "モバイルバッテリー": 4
+    "ミニPC": 4
+    "キーボード": 3
+    "ドローン": 4
+    "ロボット": 4
+    "3Dプリンタ": 4
+    "電動": 3
+    "折りたたみ": 3
+    "超小型": 4
+    "軽量": 2
   penalty:
-    # セール・ゲーム値引きなどは記事化しない
+    # セール・キャンペーン
     "deal": -6
     "discount": -6
     "% off": -6
@@ -353,10 +462,26 @@ scoring:
     "prime day": -8
     "black friday": -8
     "gift guide": -6
+    # 業界ニュース（製品そのものではないもの）
+    "lawsuit": -5
+    "court": -5
+    "judge": -4
+    "antitrust": -4
+    "earnings": -6
+    "quarterly results": -6
+    "market share": -4
+    "acquisition": -4
+    "layoffs": -6
+    "stock": -5
+    "shares": -4
+    "ceo": -3
   tier_bonus:
     1: 3
     2: 1
     3: 0
+  # クラウドファンディング由来の項目への加点
+  kind_bonus:
+    crowdfunding: 8
   # 直近何時間以内を「新鮮」とみなすか
   fresh_hours: 36
   fresh_bonus: 3

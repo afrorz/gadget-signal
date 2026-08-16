@@ -27,6 +27,11 @@ from urllib.parse import urlparse, urlunparse
 import feedparser
 import yaml
 
+try:
+    import crowdfunding
+except Exception:  # 収集モジュールが無くてもRSS収集は動かす
+    crowdfunding = None
+
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG = ROOT / "config" / "feeds.yaml"
 DATA = ROOT / "data"
@@ -127,6 +132,7 @@ def fetch_source(src: dict, defaults: dict) -> list[dict]:
             "source": src["name"],
             "category": src["category"],
             "tier": src.get("tier", 2),
+            "kind": "news",
         })
     print(f"  + {src['id']}: {len(items)}件")
     return items
@@ -145,6 +151,11 @@ def score_item(item: dict, cfg_scoring: dict, now: datetime) -> tuple[int, list[
         if kw.lower() in text:
             score += pts
             reasons.append(f"{pts} {kw}")
+
+    kb = cfg_scoring.get("kind_bonus", {}).get(item.get("kind", "news"), 0)
+    if kb:
+        score += kb
+        reasons.append(f"+{kb} クラファン発")
 
     tb = cfg_scoring.get("tier_bonus", {}).get(item["tier"], 0)
     if tb:
@@ -204,10 +215,21 @@ def main() -> int:
     DIGEST_DIR.mkdir(parents=True, exist_ok=True)
     seen: dict = json.loads(SEEN_PATH.read_text()) if SEEN_PATH.exists() else {}
 
-    print(f"■ 収集開始 — {len(sources)}ソース")
+    print(f"■ 収集開始 — RSS {len(sources)}ソース")
     raw: list[dict] = []
     for src in sources:
         raw.extend(fetch_source(src, defaults))
+
+    # クラウドファンディング（RSSを出していないプラットフォーム）
+    if crowdfunding is not None and not args.category:
+        try:
+            cf_items = crowdfunding.collect_all(seen=set(seen.keys()), id_of=item_id)
+            for it in cf_items:
+                it.setdefault("id", item_id(it["url"]))
+                it.setdefault("canonical", canonical_url(it["url"]))
+            raw.extend(cf_items)
+        except Exception as e:
+            print(f"  ! クラウドファンディング収集を飛ばしました: {e}", file=sys.stderr)
 
     # 1. URL重複を除去（同一記事が複数フィードに出るケース）
     by_id: dict[str, dict] = {}
@@ -297,7 +319,8 @@ def render_markdown(payload: dict, cfg: dict) -> str:
         lines += [f"## {CAT_LABEL[cat]}", ""]
         for i, it in enumerate(rows, 1):
             pub = datetime.fromisoformat(it["published"]).astimezone(JST).strftime("%m/%d %H:%M")
-            lines.append(f"- [ ] **[{it['score']}pt] {it['title']}**")
+            mark = "【クラファン】" if it.get("kind") == "crowdfunding" else ""
+            lines.append(f"- [ ] **[{it['score']}pt] {mark}{it['title']}**")
             lines.append(f"  - {it['source']} / {pub} JST — {it['url']}")
             if it["also_covered_by"]:
                 lines.append(f"  - 他媒体: {', '.join(it['also_covered_by'])}")
