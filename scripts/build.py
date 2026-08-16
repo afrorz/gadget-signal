@@ -169,10 +169,12 @@ def card(site: dict, p: dict, featured: bool = False) -> str:
     cat = site["categories"].get(key, {"label": "その他", "slug": "misc", "code": "---"})
     cls = ("card card-featured" if featured else "card") + f" cat-{key}"
     blurb = p.get("kicker") or p["excerpt"]
+    img, is_ext = card_image(p)
     return f"""
 <article class="{cls}">
-  <a class="card-thumb" href="{u(p['path'])}" aria-hidden="true" tabindex="-1">
-    <img src="{u("cards/" + p['slug'] + ".png")}" alt="" loading="lazy" width="1200" height="675">
+  <a class="card-thumb{' card-thumb-real' if is_ext else ''}" href="{u(p['path'])}" aria-hidden="true" tabindex="-1">
+    <img src="{img}" alt="" loading="lazy" width="1200" height="675"
+         onerror="this.onerror=null;this.src='{u("cards/" + p['slug'] + ".png")}'">
   </a>
   <p class="card-meta">
     <a class="card-code" href="{u("category/" + cat['slug'] + ".html")}">{cat.get('code','---')}</a>
@@ -253,6 +255,26 @@ def render_category(site: dict, key: str, cat: dict, posts: list[dict]) -> str:
 </main>"""
         + footer(site)
     )
+
+
+def card_image(p: dict) -> tuple[str, bool]:
+    """カードに出す画像を決める。
+
+    優先順位:
+      1. front matter の thumbnail（自社撮影・許諾済み素材を置く用）
+      2. YouTube のサムネイル（動画を埋め込んでいる場合）
+         YouTube はサムネイルを表示用に配信しており、oEmbed でも
+         thumbnail_url として公開されている。転載ではなく正規の利用。
+      3. 自動生成のアイキャッチ
+    戻り値: (URL, 外部URLか)
+    """
+    if p.get("thumbnail"):
+        th = str(p["thumbnail"])
+        return (th, th.startswith("http"))
+    for e in (p.get("embeds") or []):
+        if (e.get("type") or "").lower() == "youtube" and e.get("id"):
+            return (f"https://i.ytimg.com/vi/{e['id']}/hqdefault.jpg", True)
+    return (u("cards/" + p["slug"] + ".png"), False)
 
 
 def render_embeds(p: dict) -> tuple[str, bool]:
@@ -548,6 +570,7 @@ img{max-width:100%}
 .card-thumb{display:block;margin:0 0 12px;overflow:hidden;background:var(--surface);
   border:1px solid var(--rule);border-radius:3px}
 .card-thumb img{display:block;width:100%;height:124px;object-fit:cover;object-position:left center;
+  background:var(--surface);
   transition:transform .55s cubic-bezier(.2,.6,.2,1),opacity .3s}
 .card:hover .card-thumb img,.card-featured:hover .card-thumb img{transform:scale(1.03)}
 .card-featured .card-thumb{margin:0;grid-column:1;grid-row:1/span 3;align-self:start}
