@@ -1,0 +1,12 @@
+# 改行コードをLFに統一する。
+# Windows で編集しても、リポジトリ内は常に LF で保存される。
+# これが無いと、Windows と Linux(GitHub Actions) の間で
+# 「全行が変更された」ように見える差分が毎回発生する。
+* text=auto eol=lf
+
+# バイナリは変換しない
+*.png binary
+*.jpg binary
+*.ico binary
+*.zip binary
+*.woff2 binary
