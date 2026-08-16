@@ -10,3 +10,6 @@
 *.ico binary
 *.zip binary
 *.woff2 binary
+
+# バッチファイルは Windows の改行コード(CRLF)のまま扱う
+*.bat text eol=crlf
