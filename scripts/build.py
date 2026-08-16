@@ -36,6 +36,15 @@ JST = timezone(timedelta(hours=9))
 
 MD = markdown.Markdown(extensions=["extra", "sane_lists", "toc", "tables"])
 
+# base_url がサブディレクトリ配下（例: https://user.github.io/gadget-signal）のとき、
+# サイト内リンクにそのプレフィックスを付ける。独自ドメイン（ルート直下）なら空文字になる。
+BASE_PATH = ""
+
+
+def u(path: str) -> str:
+    """サイト内リンクを base_path 付きの絶対パスにする。"""
+    return f"{BASE_PATH}/{path.lstrip('/')}" if path != "/" else (BASE_PATH or "/") + "/"
+
 
 # ────────────────────────────── 読み込み ──────────────────────────────
 def load_site() -> dict:
@@ -69,7 +78,8 @@ def parse_post(path: Path) -> dict | None:
 # ────────────────────────────── テンプレート ──────────────────────────────
 def head(site: dict, title: str, desc: str, url_path: str, extra: str = "") -> str:
     s = site["site"]
-    full_url = f"{s['base_url'].rstrip('/')}/{url_path.lstrip('/')}"
+    _p = "" if url_path in ("index.html", "/") else url_path.lstrip("/")
+    full_url = f"{s['base_url'].rstrip('/')}/{_p}"
     return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -85,8 +95,8 @@ def head(site: dict, title: str, desc: str, url_path: str, extra: str = "") -> s
 <meta property="og:url" content="{html.escape(full_url)}">
 <meta property="og:locale" content="{s.get('locale', 'ja_JP')}">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="alternate" type="application/rss+xml" title="{html.escape(s['title'])}" href="/feed.xml">
-<link rel="stylesheet" href="/assets/style.css">
+<link rel="alternate" type="application/rss+xml" title="{html.escape(s['title'])}" href="{u('feed.xml')}">
+<link rel="stylesheet" href="{u('assets/style.css')}">
 {extra}
 </head>
 <body>"""
@@ -95,17 +105,17 @@ def head(site: dict, title: str, desc: str, url_path: str, extra: str = "") -> s
 def header(site: dict) -> str:
     s = site["site"]
     cats = "".join(
-        f'<a href="/category/{c["slug"]}.html">{html.escape(c["label"])}</a>'
+        f'<a href="{u("category/" + c["slug"] + ".html")}">{html.escape(c["label"])}</a>'
         for c in site["categories"].values()
     )
     return f"""
 <header class="site-head">
   <div class="wrap head-inner">
-    <a class="brand" href="/">
+    <a class="brand" href="{u("/")}">
       <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-name">{html.escape(s['title'])}</span>
     </a>
-    <nav class="nav">{cats}<a href="/about.html">運営</a></nav>
+    <nav class="nav">{cats}<a href="{u("about.html")}">運営</a></nav>
   </div>
 </header>"""
 
@@ -119,7 +129,7 @@ def footer(site: dict) -> str:
   <div class="wrap">
     <p class="foot-tag">{html.escape(s['tagline'])}</p>
     <p class="foot-meta">
-      <a href="/feed.xml">RSS</a> ・ <a href="/about.html">運営・免責</a>
+      <a href="{u("feed.xml")}">RSS</a> ・ <a href="{u("about.html")}">運営・免責</a>
     </p>
     <p class="foot-copy">© {span} {html.escape(s['title'])}</p>
   </div>
@@ -134,8 +144,8 @@ def card(site: dict, p: dict, featured: bool = False) -> str:
     blurb = p.get("kicker") or p["excerpt"]
     return f"""
 <article class="{cls}">
-  <a class="card-cat" href="/category/{cat['slug']}.html">{html.escape(cat['label'])}</a>
-  <h2 class="card-title"><a href="/{p['path']}">{html.escape(p['title'])}</a></h2>
+  <a class="card-cat" href="{u("category/" + cat['slug'] + ".html")}">{html.escape(cat['label'])}</a>
+  <h2 class="card-title"><a href="{u(p['path'])}">{html.escape(p['title'])}</a></h2>
   <p class="card-excerpt">{html.escape(blurb)}</p>
   <p class="card-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>{p['reading_min']}分</p>
 </article>"""
@@ -229,7 +239,7 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
         + f"""
 <main class="wrap article-wrap">
   <article class="article">
-    <p class="eyebrow"><a href="/category/{cat['slug']}.html">{html.escape(cat['label'])}</a></p>
+    <p class="eyebrow"><a href="{u("category/" + cat['slug'] + ".html")}">{html.escape(cat['label'])}</a></p>
     <h1 class="article-title">{html.escape(p['title'])}</h1>
     {f'<p class="article-lede">{html.escape(p["kicker"])}</p>' if p.get('kicker') else ''}
     <p class="article-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>読了 {p['reading_min']}分</p>
@@ -444,6 +454,12 @@ def main() -> int:
     args = ap.parse_args()
 
     site = load_site()
+
+    global BASE_PATH
+    from urllib.parse import urlparse
+    BASE_PATH = urlparse(site["site"]["base_url"]).path.rstrip("/")
+    print(f"■ base_path: {BASE_PATH or '(ルート直下)'}")
+
     posts = [p for p in (parse_post(f) for f in sorted(POSTS_DIR.glob("*.md"))) if p]
     # 日付 → priority（front matter で 1 以上を指定するとその日の先頭に来る）→ slug
     posts.sort(key=lambda p: (p["date"], p.get("priority", 0), p["slug"]), reverse=True)
