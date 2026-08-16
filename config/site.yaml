@@ -20,13 +20,16 @@ site:
 categories:
   smartphone:
     label: スマホ・ウェアラブル
+    code: MOB
     slug: smartphone
     description: 新型スマホ、リーク、スマートウォッチ。海外発表から日本上陸までの間を埋める。
   pc:
     label: PC・周辺機器・自作
+    code: PCS
     slug: pc
     description: ミニPC、GPU/CPU、キーボード、モニタ。ベンチと価格の実数を軸に。
   weird:
     label: 変わり種・中華ガジェット
+    code: ODD
     slug: weird
     description: 日本語情報がほぼ無い珍デバイス、小型端末、クラファン発プロダクト。

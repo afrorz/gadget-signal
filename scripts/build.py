@@ -95,6 +95,7 @@ def head(site: dict, title: str, desc: str, url_path: str, extra: str = "",
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0d10">
 <title>{html.escape(title)}</title>
 <meta name="description" content="{html.escape(desc)}">
 <link rel="canonical" href="{html.escape(full_url)}">
@@ -111,6 +112,9 @@ def head(site: dict, title: str, desc: str, url_path: str, extra: str = "",
 <meta name="twitter:image" content="{html.escape(img_url)}">
 <link rel="icon" type="image/svg+xml" href="{u('assets/favicon.svg')}">
 <link rel="alternate" type="application/rss+xml" title="{html.escape(s['title'])}" href="{u('feed.xml')}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{u('assets/style.css')}">
 {extra}
 </head>
@@ -120,17 +124,18 @@ def head(site: dict, title: str, desc: str, url_path: str, extra: str = "",
 def header(site: dict) -> str:
     s = site["site"]
     cats = "".join(
-        f'<a href="{u("category/" + c["slug"] + ".html")}">{html.escape(c["label"])}</a>'
-        for c in site["categories"].values()
+        f'<a href="{u("category/" + c["slug"] + ".html")}" class="nav-item cat-{k}">'
+        f'<span class="nav-code">{c.get("code", "---")}</span>'
+        f'<span class="nav-label">{html.escape(c["label"])}</span></a>'
+        for k, c in site["categories"].items()
     )
     return f"""
 <header class="site-head">
   <div class="wrap head-inner">
     <a class="brand" href="{u("/")}">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-name">{html.escape(s['title'])}</span>
+      <span class="brand-name">{html.escape(s['title'])}</span><span class="caret" aria-hidden="true"></span>
     </a>
-    <nav class="nav">{cats}<a href="{u("about.html")}">運営</a></nav>
+    <nav class="nav">{cats}<a href="{u("about.html")}" class="nav-item nav-about"><span class="nav-code">INF</span><span class="nav-label">運営</span></a></nav>
   </div>
 </header>"""
 
@@ -142,11 +147,17 @@ def footer(site: dict) -> str:
     return f"""
 <footer class="site-foot">
   <div class="wrap">
-    <p class="foot-tag">{html.escape(s['tagline'])}</p>
-    <p class="foot-meta">
-      <a href="{u("feed.xml")}">RSS</a> ・ <a href="{u("about.html")}">運営・免責</a> ・ <a href="mailto:{s.get('contact_email','')}">お問い合わせ</a>
-    </p>
-    <p class="foot-copy">© {span} {html.escape(s['title'])}</p>
+    <div class="foot-board">
+      <span class="foot-code">SYS</span>
+      <span class="foot-status">ONLINE</span>
+      <span class="foot-tag">{html.escape(s['tagline'])}</span>
+    </div>
+    <div class="foot-cols">
+      <p class="foot-meta">
+        <a href="{u("feed.xml")}">RSS</a><a href="{u("about.html")}">運営・免責</a><a href="mailto:{s.get('contact_email','')}">お問い合わせ</a>
+      </p>
+      <p class="foot-copy">© {span} {html.escape(s['title'])} — {html.escape(s['author'])}</p>
+    </div>
   </div>
 </footer>
 </body>
@@ -154,19 +165,38 @@ def footer(site: dict) -> str:
 
 
 def card(site: dict, p: dict, featured: bool = False) -> str:
-    cat = site["categories"].get(p.get("category"), {"label": "その他", "slug": "misc"})
-    cls = ("card card-featured" if featured else "card") + f' cat-{p.get("category", "misc")}'
+    key = p.get("category", "misc")
+    cat = site["categories"].get(key, {"label": "その他", "slug": "misc", "code": "---"})
+    cls = ("card card-featured" if featured else "card") + f" cat-{key}"
     blurb = p.get("kicker") or p["excerpt"]
     return f"""
 <article class="{cls}">
   <a class="card-thumb" href="{u(p['path'])}" aria-hidden="true" tabindex="-1">
     <img src="{u("cards/" + p['slug'] + ".png")}" alt="" loading="lazy" width="1200" height="675">
   </a>
-  <a class="card-cat" href="{u("category/" + cat['slug'] + ".html")}">{html.escape(cat['label'])}</a>
+  <p class="card-meta">
+    <a class="card-code" href="{u("category/" + cat['slug'] + ".html")}">{cat.get('code','---')}</a>
+    <span class="card-cat">{html.escape(cat['label'])}</span>
+    <time datetime="{p['date']}">{p['date'].replace('-', '.')}</time>
+    <span class="card-read">{p['reading_min']}MIN</span>
+  </p>
   <h2 class="card-title"><a href="{u(p['path'])}">{html.escape(p['title'])}</a></h2>
   <p class="card-excerpt">{html.escape(blurb)}</p>
-  <p class="card-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>{p['reading_min']}分</p>
 </article>"""
+
+
+def board_row(site: dict, p: dict, i: int) -> str:
+    key = p.get("category", "misc")
+    cat = site["categories"].get(key, {"code": "---", "label": "その他"})
+    return f"""<a class="board-row cat-{key}" href="{u(p['path'])}">
+  <span class="b-no">{i:02d}</span>
+  <span class="b-code">{cat.get('code','---')}</span>
+  <span class="b-date">{p['date'].replace('-', '.')}</span>
+  <span class="b-key">{html.escape(p.get('keyword') or '')}</span>
+  <span class="b-title">{html.escape(p['title'])}</span>
+  <span class="b-min">{p['reading_min']}MIN</span>
+  <span class="b-arrow" aria-hidden="true">→</span>
+</a>"""
 
 
 def render_index(site: dict, posts: list[dict]) -> str:
@@ -175,7 +205,14 @@ def render_index(site: dict, posts: list[dict]) -> str:
         body = '<p class="empty">まだ記事がありません。</p>'
     else:
         lead, rest = posts[0], posts[1:]
+        rows = "".join(board_row(site, p, i + 1) for i, p in enumerate(posts[:12]))
         body = f"""
+<section class="board">
+  <div class="board-head">
+    <span>NO</span><span>CAT</span><span>DATE</span><span>KEY</span><span>ENTRY</span><span>LEN</span><span></span>
+  </div>
+  {rows}
+</section>
 <section class="lead">
   {card(site, lead, featured=True)}
 </section>
@@ -188,6 +225,7 @@ def render_index(site: dict, posts: list[dict]) -> str:
         + f"""
 <main class="wrap">
   <section class="hero">
+    <p class="eyebrow">DEPARTURES / 海外発</p>
     <h1 class="hero-title">{html.escape(s['tagline'])}</h1>
     <p class="hero-sub">{html.escape(s['description'])}</p>
   </section>
@@ -206,8 +244,8 @@ def render_category(site: dict, key: str, cat: dict, posts: list[dict]) -> str:
         + header(site)
         + f"""
 <main class="wrap">
-  <section class="hero hero-sm">
-    <p class="eyebrow">CATEGORY</p>
+  <section class="hero hero-sm cat-{key}">
+    <p class="eyebrow">{cat.get('code','---')} / CATEGORY</p>
     <h1 class="hero-title">{html.escape(cat['label'])}</h1>
     <p class="hero-sub">{html.escape(cat['description'])}</p>
   </section>
@@ -306,10 +344,10 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
         + f"""
 <main class="wrap article-wrap">
   <article class="article cat-{p.get("category", "misc")}">
-    <p class="eyebrow"><a href="{u("category/" + cat['slug'] + ".html")}">{html.escape(cat['label'])}</a></p>
+    <p class="eyebrow"><a href="{u("category/" + cat['slug'] + ".html")}"><span class="eyebrow-code">{cat.get('code','---')}</span>{html.escape(cat['label'])}</a></p>
     <h1 class="article-title">{html.escape(p['title'])}</h1>
     {f'<p class="article-lede">{html.escape(p["kicker"])}</p>' if p.get('kicker') else ''}
-    <p class="article-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>読了 {p['reading_min']}分</p>
+    <p class="article-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>{p['reading_min']} MIN READ</p>
     <figure class="article-hero">
       <img src="{u("cards/" + p['slug'] + ".png")}" alt="{html.escape(p['title'])}" width="1200" height="675">
     </figure>
@@ -401,159 +439,228 @@ def render_sitemap(site: dict, posts: list[dict]) -> str:
 
 # ────────────────────────────── CSS ──────────────────────────────
 CSS = """
+/* ============================================================
+   Gadget Terminal — 出発案内板を設計言語にしたダークテーマ
+   ============================================================ */
 :root{
-  --ink:#14181d; --ink-2:#454e59; --ink-3:#78828f;
-  --bg:#fbfaf8; --surface:#ffffff; --rule:#e4e1db;
-  --accent:#b4472b; --accent-soft:#f6ece8;
-  --max:1120px; --measure:38rem;
-  --serif: "Iowan Old Style","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
-  --sans: -apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+  --bg:#0b0d10; --surface:#12161b; --raised:#171c22;
+  --ink:#e9edf1; --ink-2:#96a0ac; --ink-3:#5f6975;
+  --rule:#1e242c; --rule-2:#2a323c;
+  --accent:#ff6b3d;
+  --cat:var(--accent);
+  --max:1280px; --measure:36rem;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --disp:"Space Grotesk","Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
 }
-@media (prefers-color-scheme: dark){
-  :root{ --ink:#eceae6; --ink-2:#b3b0aa; --ink-3:#85817a;
-    --bg:#14151a; --surface:#1b1d23; --rule:#2c2f37;
-    --accent:#e8825f; --accent-soft:#2a1f1b; }
-}
+.cat-smartphone{--cat:#ff6b3d}
+.cat-pc{--cat:#4fb3c4}
+.cat-weird{--cat:#d9b45f}
+
+/* 生成する画像がダーク固定のため、UIもダークに統一する。
+   ライトモードにすると画像だけ黒い板になって不整合が出る。 */
+
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;color-scheme:dark}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-  font-size:16px;line-height:1.8;letter-spacing:.01em;
-  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:inherit;text-decoration:none}
+img{max-width:100%}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
 
-/* header */
-.site-head{border-bottom:1px solid var(--rule);position:sticky;top:0;
-  background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);z-index:10}
-.head-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;height:64px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.06em}
-.brand-mark{width:9px;height:9px;border-radius:50%;background:var(--accent);
-  box-shadow:0 0 0 4px var(--accent-soft);display:inline-block}
-.brand-name{font-size:15px;text-transform:uppercase}
-.nav{display:flex;gap:22px;font-size:13.5px;color:var(--ink-2);overflow-x:auto;white-space:nowrap}
-.nav a{padding-bottom:2px;border-bottom:1px solid transparent}
-.nav a:hover{color:var(--ink);border-bottom-color:var(--accent)}
+/* ── ヘッダー ───────────────────────────────── */
+.site-head{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--rule);
+  background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px) saturate(1.4)}
+.head-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;height:48px}
+.brand{display:inline-flex;align-items:center;font-family:var(--mono);font-weight:600;
+  font-size:14px;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.caret{width:9px;height:16px;background:var(--accent);margin-left:7px;display:inline-block;
+  animation:blink 1.25s steps(1) infinite}
+@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
+.nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-item{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:2px;
+  white-space:nowrap;transition:background .18s}
+.nav-item:hover{background:var(--raised)}
+.nav-code{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;
+  color:var(--cat);border:1px solid var(--cat);padding:2px 5px;border-radius:2px;opacity:.9}
+.nav-label{font-size:12px;color:var(--ink-2)}
+.nav-item:hover .nav-label{color:var(--ink)}
+.nav-about{--cat:var(--ink-3)}
 
-/* hero */
-.hero{padding:72px 0 44px;border-bottom:1px solid var(--rule);margin-bottom:44px}
-.hero-sm{padding:52px 0 32px}
-.hero-title{font-family:var(--serif);font-size:clamp(28px,4.4vw,46px);line-height:1.35;
-  margin:0 0 14px;font-weight:600;letter-spacing:-.01em;max-width:30ch}
-.hero-sub{margin:0;color:var(--ink-2);font-size:15px;max-width:32em;line-height:1.85}
-.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
-  margin:0 0 12px;font-weight:600}
+/* ── ヒーロー ───────────────────────────────── */
+.hero{padding:30px 0 20px}
+.hero-sm{padding:32px 0 22px;border-bottom:1px solid var(--rule);margin-bottom:0}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cat);margin:0 0 10px;font-weight:600}
+.hero-title{font-family:var(--disp);font-size:clamp(22px,2.9vw,34px);line-height:1.4;
+  margin:0 0 10px;font-weight:700;letter-spacing:-.015em;max-width:30em}
+.hero-sub{margin:0;color:var(--ink-2);font-size:13px;max-width:44em;line-height:1.75}
 
-/* カテゴリ配色（アイキャッチの色と揃える） */
-.cat-smartphone{--cat:#b4472b}
-.cat-pc{--cat:#2f5863}
-.cat-weird{--cat:#6d5c2e}
-@media (prefers-color-scheme: dark){
-  .cat-smartphone{--cat:#e8825f}
-  .cat-pc{--cat:#7fb3bd}
-  .cat-weird{--cat:#c4ad6b}
-}
-.card-cat{color:var(--cat,var(--accent))!important}
-.article .eyebrow{color:var(--cat,var(--accent))}
+/* ── 出発案内板 ─────────────────────────────── */
+.board{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-bottom:40px}
+.board-head,.board-row{display:grid;
+  grid-template-columns:30px 44px 84px minmax(140px,0.9fr) minmax(0,2.1fr) 44px 20px;
+  align-items:center;gap:14px;font-family:var(--mono);font-size:11.5px}
+.board-head{padding:7px 4px;color:var(--ink-3);font-size:9.5px;letter-spacing:.16em;
+  border-bottom:1px solid var(--rule)}
+.board-row{padding:8px 4px;border-bottom:1px solid var(--rule);position:relative;
+  transition:background .16s,padding-left .16s}
+.board-row:last-child{border-bottom:0}
+.board-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--cat);transform:scaleY(0);transition:transform .2s}
+.board-row:hover{background:var(--raised);padding-left:10px}
+.board-row:hover::before{transform:scaleY(1)}
+.b-no{color:var(--ink-3)}
+.b-code{color:var(--cat);font-weight:600;letter-spacing:.08em}
+.b-date{color:var(--ink-3);font-variant-numeric:tabular-nums}
+.b-key{font-family:var(--sans);font-size:13px;color:var(--ink);font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.b-title{font-family:var(--sans);font-size:12.5px;color:var(--ink-2);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.b-min{color:var(--ink-3);text-align:right}
+.b-arrow{color:var(--ink-3);text-align:right;transition:transform .2s,color .2s}
+.board-row:hover .b-arrow{color:var(--cat);transform:translateX(3px)}
+.board-row:hover .b-title{color:var(--ink)}
 
-/* eyecatch */
-.card-thumb{display:block;margin:0 0 16px;overflow:hidden;background:var(--accent-soft);
-  border:1px solid var(--rule);border-radius:2px}
-.card-thumb img{display:block;width:100%;height:180px;object-fit:cover;object-position:left center;transition:transform .5s cubic-bezier(.2,.6,.2,1)}
-.card:hover .card-thumb img{transform:scale(1.02)}
-.card-featured .card-thumb{margin-bottom:26px}
-.card-featured .card-thumb img{height:300px}
-.article-hero{margin:0 0 40px;border:1px solid var(--rule);border-radius:2px;overflow:hidden}
-.article-hero img{display:block;width:100%;height:auto;max-height:420px;object-fit:cover;object-position:left center}
-
-/* cards */
-.lead{margin-bottom:56px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));
+/* ── カード ─────────────────────────────────── */
+.lead{margin-bottom:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
   gap:1px;background:var(--rule);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.card{background:var(--bg);padding:26px 24px 30px}
-.card-featured{background:var(--bg);padding:0;border:0}
-.card-featured .card-title{font-size:clamp(24px,3.4vw,36px);line-height:1.4}
-.card-featured .card-excerpt{font-size:16.5px;max-width:34em;line-height:1.9}
-.card-cat{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--accent);font-weight:600;margin-bottom:10px}
-.card-title{font-family:var(--serif);font-weight:600;font-size:19px;line-height:1.55;margin:0 0 10px}
-.card-title a{background-image:linear-gradient(var(--accent),var(--accent));
-  background-size:0 1px;background-position:0 100%;background-repeat:no-repeat;transition:background-size .25s}
-.card-title a:hover{background-size:100% 1px}
-.card-kicker{margin:0 0 8px;color:var(--ink-2);font-size:14px}
-.card-excerpt{margin:0 0 14px;color:var(--ink-2);font-size:14px;line-height:1.8}
-.card-meta{margin:0;font-size:12px;color:var(--ink-3);letter-spacing:.04em;
-  display:flex;align-items:center;gap:9px}
-.dot{width:3px;height:3px;border-radius:50%;background:var(--ink-3);display:inline-block}
+.card{background:var(--bg);padding:18px 18px 22px}
+.card-featured{background:transparent;padding:0 0 22px;border-bottom:1px solid var(--rule);margin-bottom:26px;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:24px;align-items:start;
+  grid-template-rows:auto auto auto}
+.card-thumb{display:block;margin:0 0 12px;overflow:hidden;background:var(--surface);
+  border:1px solid var(--rule);border-radius:3px}
+.card-thumb img{display:block;width:100%;height:124px;object-fit:cover;object-position:left center;
+  transition:transform .55s cubic-bezier(.2,.6,.2,1),opacity .3s}
+.card:hover .card-thumb img,.card-featured:hover .card-thumb img{transform:scale(1.03)}
+.card-featured .card-thumb{margin:0;grid-column:1;grid-row:1/span 3;align-self:start}
+.card-featured .card-thumb img{height:186px}
+.card-featured .card-meta{grid-column:2;grid-row:1;margin-top:2px}
+.card-featured .card-title{grid-column:2;grid-row:2}
+.card-featured .card-excerpt{grid-column:2;grid-row:3}
+.card-meta{display:flex;align-items:center;gap:9px;margin:0 0 8px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink-3)}
+.card-code{color:var(--cat);font-weight:600;border:1px solid var(--cat);padding:1px 5px;
+  border-radius:2px;opacity:.92}
+.card-cat{color:var(--ink-2);font-family:var(--sans);font-size:11px;letter-spacing:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.card-read{margin-left:auto}
+.card-title{font-family:var(--disp);font-weight:700;font-size:15.5px;line-height:1.55;
+  margin:0 0 8px;letter-spacing:-.005em}
+.card-featured .card-title{font-size:clamp(18px,1.7vw,23px);line-height:1.46;margin-bottom:9px}
+.card-title a{background-image:linear-gradient(var(--cat),var(--cat));background-size:0 1.5px;
+  background-position:0 100%;background-repeat:no-repeat;transition:background-size .3s}
+.card-title a:hover{background-size:100% 1.5px}
+.card-excerpt{margin:0;color:var(--ink-2);font-size:12.5px;line-height:1.78;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-featured .card-excerpt{font-size:13px;max-width:40em;line-height:1.8;-webkit-line-clamp:3}
 
-/* article */
-.article-wrap{padding-top:56px}
+/* ── 記事 ───────────────────────────────────── */
+.article-wrap{padding-top:38px}
 .article{max-width:var(--measure);margin:0 auto}
-.article-title{font-family:var(--serif);font-size:clamp(27px,4vw,40px);line-height:1.45;
-  font-weight:600;margin:0 0 16px;letter-spacing:-.005em}
-.article-lede{font-size:17px;color:var(--ink-2);line-height:1.85;margin:0 0 18px}
-.article-meta{font-size:12.5px;color:var(--ink-3);display:flex;align-items:center;gap:9px;
-  padding-bottom:28px;border-bottom:1px solid var(--rule);margin:0 0 36px}
-.prose{font-size:16.5px;line-height:1.95}
-.prose h2{font-family:var(--serif);font-size:23px;line-height:1.5;margin:52px 0 16px;
-  font-weight:600;padding-top:6px;border-top:1px solid var(--rule)}
-.prose h3{font-size:17px;margin:34px 0 10px;font-weight:700;letter-spacing:.01em}
-.prose p{margin:0 0 22px}
-.prose ul,.prose ol{margin:0 0 22px;padding-left:1.35em}
-.prose li{margin-bottom:9px}
-.prose a{color:var(--accent);border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent)}
-.prose strong{font-weight:700}
-.prose blockquote{margin:28px 0;padding:2px 0 2px 20px;border-left:2px solid var(--accent);
+.eyebrow-code{font-family:var(--mono);border:1px solid var(--cat);padding:2px 6px;
+  border-radius:2px;margin-right:10px}
+.article-title{font-family:var(--disp);font-size:clamp(23px,2.9vw,33px);line-height:1.42;
+  font-weight:700;margin:0 0 14px;letter-spacing:-.012em}
+.article-lede{font-size:15px;color:var(--ink-2);line-height:1.82;margin:0 0 16px}
+.article-meta{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);
+  display:flex;align-items:center;gap:10px;padding-bottom:20px;border-bottom:1px solid var(--rule);margin:0}
+.dot{width:3px;height:3px;border-radius:50%;background:var(--ink-3);display:inline-block}
+.article-hero{margin:0 0 30px;border-bottom:1px solid var(--rule)}
+.article-hero img{display:block;width:100%;height:auto;max-height:220px;object-fit:cover;object-position:left center}
+.prose{font-size:15.5px;line-height:1.9;color:var(--ink)}
+.prose h2{font-family:var(--disp);font-size:19px;line-height:1.5;margin:38px 0 14px;font-weight:700;
+  letter-spacing:-.01em;padding-top:8px;position:relative}
+.prose h2::before{content:"";position:absolute;top:-1px;left:0;width:38px;height:2px;background:var(--cat)}
+.prose h3{font-size:15.5px;margin:26px 0 8px;font-weight:700}
+.prose p{margin:0 0 18px}
+.prose ul,.prose ol{margin:0 0 18px;padding-left:1.3em}
+.prose li{margin-bottom:6px}
+.prose li::marker{color:var(--cat)}
+.prose a{color:var(--cat);border-bottom:1px solid color-mix(in srgb,var(--cat) 40%,transparent)}
+.prose a:hover{border-bottom-color:var(--cat)}
+.prose strong{font-weight:700;color:var(--ink)}
+.prose blockquote{margin:30px 0;padding:2px 0 2px 22px;border-left:2px solid var(--cat);
   color:var(--ink-2);font-size:15.5px}
-.prose table{width:100%;border-collapse:collapse;margin:28px 0;font-size:14.5px;
+.prose table{width:100%;border-collapse:collapse;margin:22px 0;font-size:13.5px;
   font-variant-numeric:tabular-nums}
-.prose th,.prose td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
-.prose th{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
-.prose td:first-child{color:var(--ink-2);width:34%;white-space:nowrap}
-.prose code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;
-  background:var(--accent-soft);padding:2px 6px;border-radius:3px}
-.prose hr{border:0;border-top:1px solid var(--rule);margin:40px 0}
+.prose th,.prose td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+.prose thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--rule-2)}
+.prose td:first-child{color:var(--ink-2);width:34%}
+.prose tbody tr:hover{background:var(--raised)}
+.prose code{font-family:var(--mono);font-size:.86em;background:var(--raised);padding:2px 7px;
+  border-radius:3px;color:var(--cat)}
+.prose hr{border:0;border-top:1px solid var(--rule);margin:44px 0}
 
-/* embeds */
-.embeds{margin-top:52px;padding-top:26px;border-top:1px solid var(--rule)}
-.embeds h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
-  margin:0 0 20px;font-weight:600}
-.embed{margin:0 0 28px}
-.embed figcaption{font-size:13px;color:var(--ink-3);margin-top:10px;line-height:1.75}
-.embed-video iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:2px;display:block}
-.embed-link a{display:block;padding:20px 22px;border:1px solid var(--rule);border-radius:2px;
-  transition:border-color .2s}
-.embed-link a:hover{border-color:var(--accent)}
-.embed-link-title{display:block;font-family:var(--serif);font-size:16px;line-height:1.6;margin-bottom:8px}
-.embed-link-pub{display:block;font-size:12.5px;color:var(--ink-3)}
+/* ── 埋め込み・出典 ─────────────────────────── */
+.embeds,.sources{margin-top:38px;padding-top:22px;border-top:1px solid var(--rule)}
+.embeds h2,.sources h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 20px;font-weight:600}
+.embed{margin:0 0 30px}
+.embed figcaption{font-size:13px;color:var(--ink-3);margin-top:11px;line-height:1.75}
+.embed-video iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:3px;display:block}
+.embed-link a{display:block;padding:22px 24px;border:1px solid var(--rule);border-radius:3px;
+  background:var(--surface);transition:border-color .2s,background .2s}
+.embed-link a:hover{border-color:var(--cat);background:var(--raised)}
+.embed-link-title{display:block;font-family:var(--disp);font-weight:600;font-size:16px;
+  line-height:1.6;margin-bottom:8px}
+.embed-link-pub{display:block;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
+.sources ol{margin:0 0 20px;padding-left:1.3em;font-size:14px;line-height:1.8}
+.sources li{margin-bottom:11px}
+.sources li::marker{font-family:var(--mono);color:var(--ink-3)}
+.sources a{border-bottom:1px solid var(--rule-2)}
+.sources a:hover{border-bottom-color:var(--cat)}
+.src-pub{font-family:var(--mono);color:var(--ink-3);font-size:11.5px;margin-left:9px}
+.sources-note{font-size:12.5px;color:var(--ink-3);line-height:1.85;margin:0}
 
-/* sources */
-.sources{margin-top:56px;padding-top:26px;border-top:1px solid var(--rule)}
-.sources h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
-  margin:0 0 16px;font-weight:600}
-.sources ol{margin:0 0 18px;padding-left:1.3em;font-size:14px;line-height:1.75}
-.sources li{margin-bottom:9px}
-.sources a{color:var(--ink);border-bottom:1px solid var(--rule)}
-.sources a:hover{border-bottom-color:var(--accent)}
-.src-pub{color:var(--ink-3);font-size:12.5px;margin-left:8px}
-.sources-note{font-size:12.5px;color:var(--ink-3);line-height:1.8;margin:0}
-
-.related{max-width:var(--max);margin:80px auto 0}
-.related h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
-  margin:0 0 20px;font-weight:600}
+.related{max-width:var(--max);margin:56px auto 0}
+.related h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 22px;font-weight:600}
 .empty{color:var(--ink-3);padding:60px 0}
 
-/* footer */
-.site-foot{margin-top:96px;border-top:1px solid var(--rule);padding:44px 0 60px}
-.foot-tag{font-family:var(--serif);font-size:17px;margin:0 0 14px;max-width:30ch}
-.foot-meta{font-size:13px;color:var(--ink-2);margin:0 0 20px}
-.foot-meta a{border-bottom:1px solid var(--rule)}
-.foot-copy{font-size:12px;color:var(--ink-3);margin:0}
+/* ── フッター ───────────────────────────────── */
+.site-foot{margin-top:64px;border-top:1px solid var(--rule);padding:26px 0 44px}
+.foot-board{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.1em;padding-bottom:26px;border-bottom:1px solid var(--rule);margin-bottom:26px}
+.foot-code{color:var(--ink-3);border:1px solid var(--rule-2);padding:2px 6px;border-radius:2px}
+.foot-status{color:var(--accent);font-weight:600}
+.foot-status::before{content:"● "}
+.foot-tag{font-family:var(--sans);letter-spacing:0;color:var(--ink-2);font-size:13px;margin-left:auto;
+  text-align:right}
+.foot-cols{display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap}
+.foot-meta{margin:0;display:flex;gap:22px;font-size:13px}
+.foot-meta a{color:var(--ink-2);border-bottom:1px solid transparent;padding-bottom:2px}
+.foot-meta a:hover{color:var(--ink);border-bottom-color:var(--accent)}
+.foot-copy{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin:0;letter-spacing:.06em}
 
+/* ── レスポンシブ ───────────────────────────── */
+@media (max-width:1100px){
+  .board-head,.board-row{grid-template-columns:30px 44px 84px minmax(0,1fr) 44px 20px}
+  .b-title,.board-head span:nth-child(5){display:none}
+}
+@media (max-width:900px){
+  .nav-label{display:none}
+  .board-head,.board-row{grid-template-columns:30px 44px minmax(0,1fr) 20px}
+  .b-date,.b-min,.board-head span:nth-child(3),.board-head span:nth-child(6){display:none}
+}
+@media (max-width:820px){
+  .card-featured{grid-template-columns:1fr;gap:14px}
+  .card-featured .card-thumb{grid-row:auto}
+}
 @media (max-width:640px){
-  .hero{padding:44px 0 30px;margin-bottom:32px}
-  .article-wrap{padding-top:34px}
+  .wrap{padding:0 18px}
+  .hero{padding:52px 0 34px}
+  .board{margin-bottom:48px}
+  .article-wrap{padding-top:38px}
   .grid{grid-template-columns:1fr}
-  .prose{font-size:16px}
+  .card-featured .card-thumb img{height:170px}
+  .card-thumb img{height:150px}
+  .foot-tag{margin-left:0;text-align:left;width:100%}
+  .foot-board{flex-wrap:wrap}
 }
 """
 

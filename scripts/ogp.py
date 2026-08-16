@@ -18,12 +18,14 @@ except ImportError:  # Pillow 未導入でもビルドは通す
     Image = None
 
 W, H = 1200, 630
-BG = (251, 250, 248)
-INK = (20, 24, 29)
-INK_2 = (69, 78, 89)
-INK_3 = (140, 145, 152)
-ACCENT = (180, 71, 43)
-RULE = (228, 225, 219)
+# サイト本体（ダークテーマ）に合わせた配色
+BG = (11, 13, 16)
+SURFACE = (18, 22, 27)
+INK = (233, 237, 241)
+INK_2 = (150, 160, 172)
+INK_3 = (95, 105, 117)
+ACCENT = (255, 107, 61)
+RULE = (30, 36, 44)
 
 # 探索順にフォント候補を並べる（Linux / macOS / Windows）
 FONT_CANDIDATES = {
@@ -152,9 +154,9 @@ if __name__ == "__main__":
 CARD_W, CARD_H = 1200, 675
 
 CAT_TONE = {
-    "smartphone": (180, 71, 43),    # テラコッタ
-    "pc": (47, 88, 99),             # ディープティール
-    "weird": (109, 92, 46),         # ブロンズ
+    "smartphone": (255, 107, 61),   # オレンジ
+    "pc": (79, 179, 196),           # シアン
+    "weird": (217, 180, 95),        # アンバー
 }
 
 
@@ -184,7 +186,7 @@ def render_card(keyword: str, category_label: str, category_key: str,
     import math
     angle = 20 + (s % 5) * 12
     gap = 30 + (s >> 3) % 18
-    tint = tuple(int(c + (250 - c) * 0.945) for c in tone)
+    tint = tuple(int(BG[i] + (tone[i] - BG[i]) * 0.10) for i in range(3))
     dx = math.tan(math.radians(angle)) * CARD_H
     x = -int(abs(dx)) - 200
     while x < CARD_W + abs(dx) + 200:
@@ -207,7 +209,7 @@ def render_card(keyword: str, category_label: str, category_key: str,
 
     # 下端：細い罫線とブランド
     by = CARD_H - 76
-    d.line([(pad, by - 18), (CARD_W - pad, by - 18)], fill=tuple(int(c + (235 - c) * .75) for c in tone), width=1)
+    d.line([(pad, by - 18), (CARD_W - pad, by - 18)], fill=RULE, width=1)
     d.ellipse([pad, by + 10, pad + 15, by + 25], fill=tone)
     d.text((pad + 28, by + 6), site_title.upper(), font=f_brand, fill=INK_2)
 
