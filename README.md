@@ -1,4 +1,4 @@
-# Gadget Signal
+# Gadget Terminal
 
 海外ガジェット情報を毎日収集し、日本語記事にして静的サイトで公開するまでの一式。
 
