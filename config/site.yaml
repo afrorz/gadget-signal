@@ -3,7 +3,7 @@ site:
   title_ja: ガジェットシグナル
   tagline: 海外ガジェットの「まだ日本語で読めない話」を、毎日。
   description: スマホ・ウェアラブル、PC/自作、変わり種ガジェット。海外一次ソースを毎日クロールし、日本語で要点だけを届けるガジェットメディア。
-  base_url: https://example.github.io/gadget-signal
+  base_url: https://afrorz.github.io/gadget-signal
   lang: ja
   locale: ja_JP
   author: 合同会社（運営）
