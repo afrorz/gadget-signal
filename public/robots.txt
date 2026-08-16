@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://example.github.io/gadget-signal/sitemap.xml

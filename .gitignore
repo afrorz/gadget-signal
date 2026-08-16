@@ -2,3 +2,9 @@ __pycache__/
 *.pyc
 .DS_Store
 .venv/
+
+# ビルド成果物。GitHub Actions が毎回作り直すのでリポジトリには入れない
+public/
+
+# 配布用zipなどの一時ファイル
+*.zip

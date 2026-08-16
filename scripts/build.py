@@ -28,6 +28,11 @@ from pathlib import Path
 import markdown
 import yaml
 
+try:
+    import ogp
+except Exception:  # Pillow 未導入などでもビルドは通す
+    ogp = None
+
 ROOT = Path(__file__).resolve().parent.parent
 POSTS_DIR = ROOT / "content" / "posts"
 PUBLIC = ROOT / "public"
@@ -76,8 +81,10 @@ def parse_post(path: Path) -> dict | None:
 
 
 # ────────────────────────────── テンプレート ──────────────────────────────
-def head(site: dict, title: str, desc: str, url_path: str, extra: str = "") -> str:
+def head(site: dict, title: str, desc: str, url_path: str, extra: str = "",
+         image: str = "ogp/default.png") -> str:
     s = site["site"]
+    img_url = f"{s['base_url'].rstrip('/')}/{image.lstrip('/')}"
     _p = "" if url_path in ("index.html", "/") else url_path.lstrip("/")
     full_url = f"{s['base_url'].rstrip('/')}/{_p}"
     return f"""<!DOCTYPE html>
@@ -94,7 +101,12 @@ def head(site: dict, title: str, desc: str, url_path: str, extra: str = "") -> s
 <meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:url" content="{html.escape(full_url)}">
 <meta property="og:locale" content="{s.get('locale', 'ja_JP')}">
+<meta property="og:image" content="{html.escape(img_url)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{html.escape(img_url)}">
+<link rel="icon" type="image/svg+xml" href="{u('assets/favicon.svg')}">
 <link rel="alternate" type="application/rss+xml" title="{html.escape(s['title'])}" href="{u('feed.xml')}">
 <link rel="stylesheet" href="{u('assets/style.css')}">
 {extra}
@@ -234,7 +246,8 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
 </script>"""
 
     return (
-        head(site, f"{p['title']} — {s['title']}", p["excerpt"], p["path"], ld)
+        head(site, f"{p['title']} — {s['title']}", p["excerpt"], p["path"], ld,
+             image=f"ogp/{p['slug']}.png")
         + header(site)
         + f"""
 <main class="wrap article-wrap">
@@ -447,6 +460,15 @@ a{color:inherit;text-decoration:none}
 """
 
 
+FAVICON = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#fbfaf8"/>
+  <circle cx="32" cy="32" r="7" fill="#b4472b"/>
+  <circle cx="32" cy="32" r="15" fill="none" stroke="#b4472b" stroke-width="3" stroke-opacity=".55"/>
+  <circle cx="32" cy="32" r="23" fill="none" stroke="#b4472b" stroke-width="3" stroke-opacity=".25"/>
+</svg>
+"""
+
+
 # ────────────────────────────── メイン ──────────────────────────────
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -472,6 +494,19 @@ def main() -> int:
     (PUBLIC / "assets").mkdir(parents=True)
 
     (PUBLIC / "assets" / "style.css").write_text(CSS, encoding="utf-8")
+    (PUBLIC / "assets" / "favicon.svg").write_text(FAVICON, encoding="utf-8")
+
+    # OGP画像（フォントが無い環境では静かにスキップ）
+    if ogp is not None:
+        made = 0
+        for p in posts:
+            cat = site["categories"].get(p.get("category"), {"label": "その他"})
+            if ogp.render(p["title"], cat["label"], s_title := site["site"]["title"],
+                          PUBLIC / "ogp" / f"{p['slug']}.png"):
+                made += 1
+        ogp.render(site["site"]["tagline"], "GADGET SIGNAL", site["site"]["title"],
+                   PUBLIC / "ogp" / "default.png")
+        print(f"■ OGP画像 {made}枚" if made else "■ OGP画像: フォントが無いためスキップ")
     (PUBLIC / "index.html").write_text(render_index(site, posts), encoding="utf-8")
     (PUBLIC / "about.html").write_text(render_about(site), encoding="utf-8")
     for p in posts:

@@ -174,6 +174,140 @@ sources:
       Kickstarter/Indiegogo は公式Atomが不安定（406を返すことがある）。
       セルフホストしたRSSHub経由が現実的。当面は無効、必要になったら有効化する。
 
+  # ── 追加ソース（2026-08-16 拡張分）─────────────────────
+  # verified: true は実際に取得を確認したもの。false は未確認だが定番のフィード。
+  # 取得できないソースがあっても collect.py はそのソースだけ飛ばして続行する。
+
+  # スマホ・ウェアラブル
+  - id: androidpolice
+    name: Android Police
+    url: https://www.androidpolice.com/feed/
+    category: smartphone
+    tier: 2
+    lang: en
+
+  - id: phonearena
+    name: PhoneArena
+    url: https://www.phonearena.com/feed
+    category: smartphone
+    tier: 2
+    lang: en
+
+  - id: huaweicentral
+    name: Huawei Central
+    url: https://www.huaweicentral.com/feed/
+    category: smartphone
+    tier: 3
+    lang: en
+    note: Huawei/HarmonyOS 専門。日本語情報が薄い領域。
+
+  - id: dcrainmaker
+    name: DC Rainmaker
+    url: https://www.dcrainmaker.com/feed
+    category: smartphone
+    tier: 2
+    lang: en
+    note: スポーツウォッチ・サイコンの実測レビュー。深さで勝てる数少ない領域。
+
+  # PC・周辺機器・自作
+  - id: blocksandfiles
+    name: Blocks & Files
+    url: https://blocksandfiles.com/feed/
+    category: pc
+    tier: 1
+    lang: en
+    verified: true
+    note: ストレージ専門。調査・論文ベースのネタが拾える。
+
+  - id: servethehome
+    name: ServeTheHome
+    url: https://www.servethehome.com/feed/
+    category: pc
+    tier: 1
+    lang: en
+    note: ミニPC・サーバ・NICの実測。ホームラボ需要と相性が良い。
+
+  - id: wccftech
+    name: Wccftech
+    url: https://wccftech.com/feed/
+    category: pc
+    tier: 3
+    lang: en
+    note: 速いがリーク混在率が高い。必ず他媒体と突き合わせる。
+
+  - id: theregister
+    name: The Register
+    url: https://www.theregister.com/headlines.atom
+    category: pc
+    tier: 2
+    lang: en
+
+  - id: minimachines
+    name: Minimachines
+    url: https://blog.minimachines.net/feed
+    category: pc
+    tier: 3
+    lang: fr
+    note: フランス語。ミニPC/ UMPC の情報が早い。翻訳前提。
+
+  - id: framework_blog
+    name: Framework（公式ブログ）
+    url: https://frame.work/blog.rss
+    category: pc
+    tier: 1
+    lang: en
+    note: メーカー公式＝一次情報。修理可能PCの動向。
+
+  # 変わり種・クラファン・中華ガジェット
+  - id: cnx_software_dup_check
+    name: CNX Software（確認済み）
+    url: https://www.cnx-software.com/feed/
+    category: weird
+    tier: 2
+    lang: en
+    verified: true
+    enabled: false
+    note: 上の cnx_software と同一。重複のため無効。参照用に残す。
+
+  - id: ithome_cn
+    name: IT之家（中国）
+    url: https://www.ithome.com/rss/
+    category: weird
+    tier: 1
+    lang: zh
+    note: 中国語。中華ガジェットの発表を最速で拾える。翻訳前提だが差別化の核。
+
+  - id: adafruit
+    name: Adafruit Blog
+    url: https://blog.adafruit.com/feed/
+    category: weird
+    tier: 3
+    lang: en
+    note: 電子工作・自作デバイス。
+
+  - id: retrododo
+    name: Retro Dodo
+    url: https://retrododo.com/feed/
+    category: weird
+    tier: 3
+    lang: en
+    note: 携帯ゲーム機・エミュ機。中華ハンドヘルドの新製品が早い。
+
+  - id: techeblog
+    name: TechEBlog
+    url: https://www.techeblog.com/feed/
+    category: weird
+    tier: 3
+    lang: en
+
+  - id: raspberrypi_official
+    name: Raspberry Pi（公式ブログ）
+    url: https://www.raspberrypi.com/blog/feed/
+    category: weird
+    tier: 1
+    lang: en
+    note: メーカー公式＝一次情報。
+
 # ── 注目度スコアリング ────────────────────────────────
 # 記事タイトル/要約に含まれるキーワードで加点し、上位を下書き候補に回す
 scoring:
@@ -200,6 +334,11 @@ scoring:
     "handheld": 3
     "keyboard": 2
     "foldable": 3
+    "single-board": 3
+    "smartwatch": 2
+    "open source": 2
+    "study": 3
+    "failure rate": 3
   penalty:
     # セール・ゲーム値引きなどは記事化しない
     "deal": -6
@@ -210,6 +349,10 @@ scoring:
     "steam sale": -8
     "sweepstake": -8
     "giveaway": -6
+    "best deals": -8
+    "prime day": -8
+    "black friday": -8
+    "gift guide": -6
   tier_bonus:
     1: 3
     2: 1
