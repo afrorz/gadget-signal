@@ -143,7 +143,7 @@ def footer(site: dict) -> str:
   <div class="wrap">
     <p class="foot-tag">{html.escape(s['tagline'])}</p>
     <p class="foot-meta">
-      <a href="{u("feed.xml")}">RSS</a> ・ <a href="{u("about.html")}">運営・免責</a>
+      <a href="{u("feed.xml")}">RSS</a> ・ <a href="{u("about.html")}">運営・免責</a> ・ <a href="mailto:{s.get('contact_email','')}">お問い合わせ</a>
     </p>
     <p class="foot-copy">© {span} {html.escape(s['title'])}</p>
   </div>
@@ -294,7 +294,12 @@ def render_about(site: dict) -> str:
       引用は出典を明示のうえ、必要最小限の範囲で行います。訂正・削除のご依頼は下記までご連絡ください。</p>
 
       <h2>お問い合わせ</h2>
-      <p>運営: {html.escape(s['author'])}<br>連絡先: 準備中</p>
+      <p>記事内容の訂正・削除のご依頼、その他のお問い合わせは下記までご連絡ください。</p>
+      <ul>
+        <li>一般のお問い合わせ： <a href="mailto:{s.get('contact_email','')}">{html.escape(s.get('contact_email',''))}</a></li>
+        <li>製品情報・取材のご連絡： <a href="mailto:{s.get('press_email','')}">{html.escape(s.get('press_email',''))}</a></li>
+      </ul>
+      <p>運営： {html.escape(s['author'])}</p>
     </div>
   </article>
 </main>"""

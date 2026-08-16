@@ -1,10 +1,10 @@
-# Gadget Signal / 情報ソース定義
+# Gadget Terminal / 情報ソース定義
 # tier: 1=一次情報に近い/速報性が高い  2=標準  3=ネタ枠・補助
 # category: smartphone | pc | weird
 # verified: 2026-08-16 時点で取得を確認したもの
 
 defaults:
-  user_agent: "GadgetSignalBot/1.0 (+https://example.com; contact: afrorz@gmail.com)"
+  user_agent: "GadgetTerminalBot/1.0 (+https://gadgetterminal.com; contact: info@gadgetterminal.com)"
   timeout: 20
   max_items_per_feed: 40
 
