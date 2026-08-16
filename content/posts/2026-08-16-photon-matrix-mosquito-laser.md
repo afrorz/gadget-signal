@@ -6,6 +6,10 @@ category: weird
 date: 2026-08-16
 kicker: LiDARとミリ波レーダーとAI画像認識で2〜20mmの飛翔体を検知し、レーザーで撃つ。家庭用の赤外線版が988ドル、産業用の青色レーザー版が1,088ドル。今月出荷予定。
 tags: [レーザー, 蚊, 中華ガジェット, LiDAR]
+embeds:
+  - type: youtube
+    id: AL8u-QK7ZgI
+    caption: 蚊を検知して撃つ動作の映像（Interesting Engineering Explains）
 sources:
   - title: "Futuristic mosquito-zapping laser now available to buy, video shows device in action"
     url: https://www.tomshardware.com/peripherals/futuristic-mosquito-zapping-laser-now-available-to-buy-video-shows-device-in-action-tiny-device-shoots-down-bugs-like-a-personal-air-defense-system-but-costs-usd1-000

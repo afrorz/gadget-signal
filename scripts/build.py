@@ -302,8 +302,24 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
     s = site["site"]
     cat = site["categories"].get(p.get("category"), {"label": "その他", "slug": "misc"})
     embeds_html, needs_x = render_embeds(p)
+    # 最初の1本は本文の前に出す。下端に置くと誰も見ないため。
+    lead_embed, rest_embed = "", ""
     if embeds_html:
-        embeds_html = f'<section class="embeds"><h2>公式の投稿・動画</h2>{embeds_html}</section>'
+        parts = embeds_html.split("</figure>")
+        blocks = [x + "</figure>" for x in parts if x.strip()]
+        lead_embed = f'<section class="embeds embeds-lead">{blocks[0]}</section>' if blocks else ""
+        if len(blocks) > 1:
+            rest_embed = ('<section class="embeds"><h2>関連する投稿・動画</h2>'
+                          + "".join(blocks[1:]) + '</section>')
+    embeds_html = rest_embed
+
+    # 動画がある記事は生成画像を出さない。実写のほうが情報量が多い。
+    if lead_embed:
+        hero_block = lead_embed
+    else:
+        hero_block = (f'<figure class="article-hero">'
+                      f'<img src="{u("cards/" + p["slug"] + ".png")}" '
+                      f'alt="{html.escape(p["title"])}" width="1200" height="675"></figure>')
     sources = ""
     if p["sources"]:
         rows = "".join(
@@ -348,9 +364,7 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
     <h1 class="article-title">{html.escape(p['title'])}</h1>
     {f'<p class="article-lede">{html.escape(p["kicker"])}</p>' if p.get('kicker') else ''}
     <p class="article-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>{p['reading_min']} MIN READ</p>
-    <figure class="article-hero">
-      <img src="{u("cards/" + p['slug'] + ".png")}" alt="{html.escape(p['title'])}" width="1200" height="675">
-    </figure>
+    {hero_block}
     <div class="prose">{p['body_html']}</div>
     {embeds_html}
     {sources}
@@ -598,11 +612,15 @@ img{max-width:100%}
 
 /* ── 埋め込み・出典 ─────────────────────────── */
 .embeds,.sources{margin-top:38px;padding-top:22px;border-top:1px solid var(--rule)}
+.embeds-lead{margin:0 0 30px;padding-top:0;border-top:0}
+.embeds-lead .embed{margin-bottom:0}
 .embeds h2,.sources h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--ink-3);margin:0 0 20px;font-weight:600}
 .embed{margin:0 0 30px}
 .embed figcaption{font-size:13px;color:var(--ink-3);margin-top:11px;line-height:1.75}
-.embed-video iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:3px;display:block}
+.embed-video{background:var(--surface);border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.embed-video iframe{width:100%;aspect-ratio:16/9;border:0;display:block;background:var(--surface)}
+.embed-video figcaption{padding:0 2px}
 .embed-link a{display:block;padding:22px 24px;border:1px solid var(--rule);border-radius:3px;
   background:var(--surface);transition:border-color .2s,background .2s}
 .embed-link a:hover{border-color:var(--cat);background:var(--raised)}

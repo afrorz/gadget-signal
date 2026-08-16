@@ -6,6 +6,10 @@ category: weird
 date: 2026-08-16
 kicker: BlackBerry の子孫のような見た目だが電話ではない。LoRa と MeshCore で、携帯圏外どうしを直接つなぐメッシュ通信端末。
 tags: [LoRa, MeshCore, Meshtastic, ESP32, 変わり種]
+embeds:
+  - type: youtube
+    id: l7ITJTsp9CY
+    caption: ThinkNode M9 の実機レビュー。QWERTYキーと画面の大きさが分かる（andy kirby）
 sources:
   - title: "Elecrow ThinkNode M9 is a phone-like mesh communicator with a 2.4 inch screen, QWERTY keyboard, and LoRa"
     url: https://liliputing.com/elecrow-thinknode-m9-is-a-phone-like-mesh-communicator-with-a-2-4-inch-sccreen-qwerty-keyboard-and-lora/
