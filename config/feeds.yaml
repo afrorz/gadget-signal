@@ -1,0 +1,219 @@
+# Gadget Signal / 情報ソース定義
+# tier: 1=一次情報に近い/速報性が高い  2=標準  3=ネタ枠・補助
+# category: smartphone | pc | weird
+# verified: 2026-08-16 時点で取得を確認したもの
+
+defaults:
+  user_agent: "GadgetSignalBot/1.0 (+https://example.com; contact: afrorz@gmail.com)"
+  timeout: 20
+  max_items_per_feed: 40
+
+sources:
+  # ── スマホ・ウェアラブル ───────────────────────────────
+  - id: gsmarena
+    name: GSMArena
+    url: https://www.gsmarena.com/rss-news-reviews.php3
+    category: smartphone
+    tier: 1
+    lang: en
+    verified: true
+    note: スマホ新製品・リークの本流。日本語圏より半日〜数日速い。
+
+  - id: androidauthority
+    name: Android Authority
+    url: https://www.androidauthority.com/feed/
+    category: smartphone
+    tier: 1
+    lang: en
+    note: APK解析発のスクープが多く、独自ネタの宝庫。
+
+  - id: 9to5google
+    name: 9to5Google
+    url: https://9to5google.com/feed/
+    category: smartphone
+    tier: 2
+    lang: en
+
+  - id: 9to5mac
+    name: 9to5Mac
+    url: https://9to5mac.com/feed/
+    category: smartphone
+    tier: 2
+    lang: en
+
+  - id: xda
+    name: XDA Developers
+    url: https://www.xda-developers.com/feed/
+    category: smartphone
+    tier: 2
+    lang: en
+
+  - id: sammobile
+    name: SamMobile
+    url: https://www.sammobile.com/feed/
+    category: smartphone
+    tier: 2
+    lang: en
+
+  - id: notebookcheck_smart
+    name: Notebookcheck (Smartphone)
+    url: https://www.notebookcheck.net/Smartphone-News.153.100.html?type=rss
+    category: smartphone
+    tier: 2
+    lang: en
+    verified: true
+
+  # ── PC・周辺機器・自作 ─────────────────────────────────
+  - id: notebookcheck
+    name: Notebookcheck
+    url: https://www.notebookcheck.net/News.152.100.html?type=rss&view=all
+    category: pc
+    tier: 1
+    lang: en
+    verified: true
+    note: 更新頻度が非常に高い。実測ベンチが載るので数値を引ける。
+
+  - id: videocardz
+    name: VideoCardz
+    url: https://videocardz.com/feed
+    category: pc
+    tier: 1
+    lang: en
+    note: GPU/CPUリークの一次寄り。スペック表がそのまま素材になる。
+
+  - id: techpowerup
+    name: TechPowerUp
+    url: https://www.techpowerup.com/rss/news
+    category: pc
+    tier: 1
+    lang: en
+    note: User-Agent必須（無指定だと403）。defaults.user_agent で回避。
+
+  - id: tomshardware
+    name: Tom's Hardware
+    url: https://www.tomshardware.com/feeds/all
+    category: pc
+    tier: 2
+    lang: en
+
+  - id: guru3d
+    name: Guru3D
+    url: https://www.guru3d.com/rss/news/
+    category: pc
+    tier: 3
+    lang: en
+
+  - id: phoronix
+    name: Phoronix
+    url: https://www.phoronix.com/rss.php
+    category: pc
+    tier: 3
+    lang: en
+    note: Linux/ドライバ周り。技術寄りの深掘りネタ用。
+
+  # ── 変わり種・クラファン・中華ガジェット ────────────────
+  - id: liliputing
+    name: Liliputing
+    url: https://liliputing.com/feed
+    category: weird
+    tier: 1
+    lang: en
+    verified: true
+    note: ミニPC・小型端末・変態デバイスの定点観測。日本語情報がほぼ無い領域。
+
+  - id: gizmochina
+    name: Gizmochina
+    url: https://www.gizmochina.com/feed/
+    category: weird
+    tier: 1
+    lang: en
+    verified: true
+    note: 中華メーカーの新製品を最速で拾える。
+
+  - id: hackaday
+    name: Hackaday
+    url: https://hackaday.com/blog/feed/
+    category: weird
+    tier: 2
+    lang: en
+    verified: true
+    note: 自作・改造ネタ。バズりやすいが商品化前が多い。
+
+  - id: yankodesign
+    name: Yanko Design
+    url: https://www.yankodesign.com/feed/
+    category: weird
+    tier: 2
+    lang: en
+    verified: true
+    note: コンセプト/デザイン寄り。画像映えするのでSNS向き。
+
+  - id: cnx_software
+    name: CNX Software
+    url: https://www.cnx-software.com/feed/
+    category: weird
+    tier: 2
+    lang: en
+    note: SBC・組込みボード。ニッチだが検索需要が固い。
+
+  - id: gadgetflow
+    name: Gadget Flow
+    url: https://thegadgetflow.com/feed/
+    category: weird
+    tier: 3
+    lang: en
+
+  - id: indiegogo_tech
+    name: Indiegogo Tech (RSSHub)
+    url: https://rsshub.app/indiegogo/discover/tech
+    category: weird
+    tier: 3
+    lang: en
+    enabled: false
+    note: |
+      Kickstarter/Indiegogo は公式Atomが不安定（406を返すことがある）。
+      セルフホストしたRSSHub経由が現実的。当面は無効、必要になったら有効化する。
+
+# ── 注目度スコアリング ────────────────────────────────
+# 記事タイトル/要約に含まれるキーワードで加点し、上位を下書き候補に回す
+scoring:
+  boost:
+    # 一次情報・確度の高いイベント
+    "official": 3
+    "announced": 3
+    "launch": 3
+    "hands-on": 4
+    "review": 3
+    "benchmark": 4
+    "teardown": 4
+    "first look": 3
+    "price": 2
+    "release date": 3
+    # 日本で刺さりやすい固有名詞
+    "japan": 4
+    "snapdragon": 2
+    "pixel": 2
+    "galaxy": 2
+    "steam deck": 3
+    "mini pc": 3
+    "e ink": 3
+    "handheld": 3
+    "keyboard": 2
+    "foldable": 3
+  penalty:
+    # セール・ゲーム値引きなどは記事化しない
+    "deal": -6
+    "discount": -6
+    "% off": -6
+    "coupon": -6
+    "bundle": -4
+    "steam sale": -8
+    "sweepstake": -8
+    "giveaway": -6
+  tier_bonus:
+    1: 3
+    2: 1
+    3: 0
+  # 直近何時間以内を「新鮮」とみなすか
+  fresh_hours: 36
+  fresh_bonus: 3

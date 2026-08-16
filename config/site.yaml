@@ -1,0 +1,30 @@
+site:
+  title: Gadget Signal
+  title_ja: ガジェットシグナル
+  tagline: 海外ガジェットの「まだ日本語で読めない話」を、毎日。
+  description: スマホ・ウェアラブル、PC/自作、変わり種ガジェット。海外一次ソースを毎日クロールし、日本語で要点だけを届けるガジェットメディア。
+  base_url: https://example.github.io/gadget-signal
+  lang: ja
+  locale: ja_JP
+  author: 合同会社（運営）
+  copyright_from: 2026
+  posts_per_page: 20
+  # 収益化は後回し。有効化するときは true にしてタグを入れる
+  analytics_id: ""
+  affiliate:
+    enabled: false
+    amazon_tag: ""
+
+categories:
+  smartphone:
+    label: スマホ・ウェアラブル
+    slug: smartphone
+    description: 新型スマホ、リーク、スマートウォッチ。海外発表から日本上陸までの間を埋める。
+  pc:
+    label: PC・周辺機器・自作
+    slug: pc
+    description: ミニPC、GPU/CPU、キーボード、モニタ。ベンチと価格の実数を軸に。
+  weird:
+    label: 変わり種・中華ガジェット
+    slug: weird
+    description: 日本語情報がほぼ無い珍デバイス、小型端末、クラファン発プロダクト。

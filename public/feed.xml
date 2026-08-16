@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+  <title>Gadget Signal</title>
+  <link>https://example.github.io/gadget-signal/</link>
+  <description>スマホ・ウェアラブル、PC/自作、変わり種ガジェット。海外一次ソースを毎日クロールし、日本語で要点だけを届けるガジェットメディア。</description>
+  <language>ja</language>
+  <item>
+    <title>米国の低価格スマホが前年比64%減 — メモリ高騰が「安いスマホ」から先に消している</title>
+    <link>https://example.github.io/gadget-signal/posts/budget-phones-memory-crunch.html</link>
+    <guid isPermaLink="true">https://example.github.io/gadget-signal/posts/budget-phones-memory-crunch.html</guid>
+    <pubDate>Sun, 16 Aug 2026 00:00:00 +0900</pubDate>
+    <description>米国のスマートフォン販売は2026年Q2に前年同期比で 5%減。この数字だけなら「やや冷えている」で終わる話だが、内訳を見ると景色が変わる。バジェット帯——Samsung Galaxy A シリーズや Motorola…</description>
+  </item>
+  <item>
+    <title>Steam Deck LCD版の交換バッテリーが179.99ドルに — 発売時から125%の値上げ</title>
+    <link>https://example.github.io/gadget-signal/posts/steam-deck-lcd-battery-price.html</link>
+    <guid isPermaLink="true">https://example.github.io/gadget-signal/posts/steam-deck-lcd-battery-price.html</guid>
+    <pubDate>Sun, 16 Aug 2026 00:00:00 +0900</pubDate>
+    <description>iFixit で販売されている Steam Deck LCD モデル用の交換バッテリー が 179.99ドル になった。当初価格は 79.99ドルで、125%の値上げ にあたる。
+値上げは一度ではなく二段階だ。まず在庫切…</description>
+  </item>
+  <item>
+    <title>MeLE Quieter HD — ファンレスN150ミニPCに2.5インチベイが入った、450ドルから</title>
+    <link>https://example.github.io/gadget-signal/posts/mele-quieter-hd.html</link>
+    <guid isPermaLink="true">https://example.github.io/gadget-signal/posts/mele-quieter-hd.html</guid>
+    <pubDate>Sun, 16 Aug 2026 00:00:00 +0900</pubDate>
+    <description>MeLE の Quieter シリーズは、ファンレスで手のひらに載るミニ PC として長く続いてきたラインだ。新型の Quieter HD はその方向性を一度降りている。本体は 150 × 105.4 × 39.6mm（…</description>
+  </item>
+  <item>
+    <title>Elecrow ThinkNode M9 — 電波が届かない場所で文字を送る、75ドルのQWERTY端末</title>
+    <link>https://example.github.io/gadget-signal/posts/elecrow-thinknode-m9.html</link>
+    <guid isPermaLink="true">https://example.github.io/gadget-signal/posts/elecrow-thinknode-m9.html</guid>
+    <pubDate>Sun, 16 Aug 2026 00:00:00 +0900</pubDate>
+    <description>Elecrow ThinkNode M9 は、iPhone と Android ではなく BlackBerry と Palm Treo の側に進化した世界線から来たような端末だ。実際にはスマートフォンではない。通話機能は…</description>
+  </item>
+</channel></rss>
