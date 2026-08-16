@@ -1,6 +1,7 @@
 ---
 title: 米連邦地裁、Googleに「怖い警告」の削除を命令 — 他社アプリストアの導入を1週間以内に簡単にせよ
 slug: google-third-party-store-ruling
+keyword: アプリストア判決
 category: smartphone
 date: 2026-08-16
 kicker: James Donato判事が、サードパーティ製アプリストアのインストール時にGoogleが挟んでいた警告と余分なステップを「反競争的な摩擦」と認定。8月14日付の命令で、1週間以内の是正を求めた。適用範囲は米国のみ。

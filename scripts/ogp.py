@@ -143,3 +143,74 @@ if __name__ == "__main__":
         Path(__file__).resolve().parent.parent / "public" / "ogp" / "_sample.png",
     )
     print("生成しました" if ok else "フォントが見つからないためスキップしました")
+
+
+# ────────────────────────────── 記事アイキャッチ ──────────────────────────────
+# OGP画像（タイトル入り）はSNS共有用。サイト内のカードでタイトルを二重に出さないため、
+# アイキャッチは「記事のキーワード」を大きく組んだ別デザインにする。
+
+CARD_W, CARD_H = 1200, 675
+
+CAT_TONE = {
+    "smartphone": (180, 71, 43),    # テラコッタ
+    "pc": (47, 88, 99),             # ディープティール
+    "weird": (109, 92, 46),         # ブロンズ
+}
+
+
+def _seed(text: str) -> int:
+    import hashlib
+    return int(hashlib.sha1(text.encode("utf-8")).hexdigest()[:8], 16)
+
+
+def render_card(keyword: str, category_label: str, category_key: str,
+                site_title: str, slug: str, out_path: Path) -> bool:
+    """記事一覧・記事冒頭に使うアイキャッチ。タイトルは入れない。"""
+    if Image is None:
+        return False
+    tone = CAT_TONE.get(category_key, ACCENT)
+    f_word = _font("bold", 96)
+    f_label = _font("bold", 24)
+    f_brand = _font("bold", 22)
+    if not all([f_word, f_label, f_brand]):
+        return False
+
+    img = Image.new("RGB", (CARD_W, CARD_H), BG)
+    d = ImageDraw.Draw(img)
+    s = _seed(slug)
+
+    # 背景：slugから決まる角度のストライプ。記事ごとに違う模様になる。
+    # 文字が読めるよう、地色にごく近い薄さにする（下地の白板を敷かずに済む）。
+    import math
+    angle = 20 + (s % 5) * 12
+    gap = 30 + (s >> 3) % 18
+    tint = tuple(int(c + (250 - c) * 0.945) for c in tone)
+    dx = math.tan(math.radians(angle)) * CARD_H
+    x = -int(abs(dx)) - 200
+    while x < CARD_W + abs(dx) + 200:
+        d.line([(x, CARD_H), (x + dx, 0)], fill=tint, width=11)
+        x += gap + 11
+
+    d.rectangle([0, 0, CARD_W, 7], fill=tone)
+
+    pad = 76
+    d.text((pad, 92), category_label, font=f_label, fill=tone)
+
+    # キーワードを縦方向の中心に置く（最大2行）
+    lines = _wrap(d, keyword, f_word, CARD_W - pad * 2, 2)
+    line_h = 132
+    block_h = line_h * len(lines)
+    y = int((CARD_H - block_h) / 2) - 10
+    for ln in lines:
+        d.text((pad, y), ln, font=f_word, fill=INK)
+        y += line_h
+
+    # 下端：細い罫線とブランド
+    by = CARD_H - 76
+    d.line([(pad, by - 18), (CARD_W - pad, by - 18)], fill=tuple(int(c + (235 - c) * .75) for c in tone), width=1)
+    d.ellipse([pad, by + 10, pad + 15, by + 25], fill=tone)
+    d.text((pad + 28, by + 6), site_title.upper(), font=f_brand, fill=INK_2)
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out_path, "PNG", optimize=True)
+    return True

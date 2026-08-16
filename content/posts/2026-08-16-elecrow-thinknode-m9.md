@@ -1,6 +1,7 @@
 ---
 title: Elecrow ThinkNode M9 — 電波が届かない場所で文字を送る、75ドルのQWERTY端末
 slug: elecrow-thinknode-m9
+keyword: ThinkNode M9
 category: weird
 date: 2026-08-16
 kicker: BlackBerry の子孫のような見た目だが電話ではない。LoRa と MeshCore で、携帯圏外どうしを直接つなぐメッシュ通信端末。

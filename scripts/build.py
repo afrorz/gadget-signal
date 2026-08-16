@@ -77,6 +77,7 @@ def parse_post(path: Path) -> dict | None:
     meta["reading_min"] = max(1, round(len(body_md) / 500))
     meta["path"] = f"posts/{meta['slug']}.html"
     meta.setdefault("tags", [])
+    meta["keyword"] = meta.get("keyword") or (meta["tags"][0] if meta.get("tags") else "")
     meta.setdefault("sources", [])
     meta.setdefault("excerpt", re.sub(r"<[^>]+>", "", meta["body_html"])[:110].strip() + "…")
     return meta
@@ -154,10 +155,13 @@ def footer(site: dict) -> str:
 
 def card(site: dict, p: dict, featured: bool = False) -> str:
     cat = site["categories"].get(p.get("category"), {"label": "その他", "slug": "misc"})
-    cls = "card card-featured" if featured else "card"
+    cls = ("card card-featured" if featured else "card") + f' cat-{p.get("category", "misc")}'
     blurb = p.get("kicker") or p["excerpt"]
     return f"""
 <article class="{cls}">
+  <a class="card-thumb" href="{u(p['path'])}" aria-hidden="true" tabindex="-1">
+    <img src="{u("cards/" + p['slug'] + ".png")}" alt="" loading="lazy" width="1200" height="675">
+  </a>
   <a class="card-cat" href="{u("category/" + cat['slug'] + ".html")}">{html.escape(cat['label'])}</a>
   <h2 class="card-title"><a href="{u(p['path'])}">{html.escape(p['title'])}</a></h2>
   <p class="card-excerpt">{html.escape(blurb)}</p>
@@ -213,9 +217,55 @@ def render_category(site: dict, key: str, cat: dict, posts: list[dict]) -> str:
     )
 
 
+def render_embeds(p: dict) -> tuple[str, bool]:
+    """front matter の embeds を、プラットフォーム公式の埋め込みHTMLに変換する。
+
+    画像を自社サーバーにコピーせず、権利者が公開している投稿をそのまま表示する方式。
+    転載にあたらないため、メーカー公式アカウントの製品写真を合法的に見せられる。
+    戻り値: (HTML, X埋め込みスクリプトが必要か)
+    """
+    items = p.get("embeds") or []
+    if not items:
+        return "", False
+    blocks, needs_x = [], False
+    for e in items:
+        kind = (e.get("type") or "").lower()
+        url = e.get("url", "")
+        caption = html.escape(e.get("caption", ""))
+        if kind in ("x", "twitter"):
+            needs_x = True
+            blocks.append(
+                f'<figure class="embed embed-x">'
+                f'<blockquote class="twitter-tweet" data-lang="ja" data-dnt="true">'
+                f'<a href="{html.escape(url)}"></a></blockquote>'
+                f'{f"<figcaption>{caption}</figcaption>" if caption else ""}</figure>')
+        elif kind == "youtube":
+            vid = html.escape(e.get("id", ""))
+            blocks.append(
+                f'<figure class="embed embed-video">'
+                f'<iframe src="https://www.youtube-nocookie.com/embed/{vid}" '
+                f'title="{caption or "YouTube"}" loading="lazy" allowfullscreen '
+                f'referrerpolicy="strict-origin-when-cross-origin"></iframe>'
+                f'{f"<figcaption>{caption}</figcaption>" if caption else ""}</figure>')
+        elif kind == "link":
+            # 権利上そのまま出せない画像は、元記事へのリンクカードで代替する
+            title = html.escape(e.get("title", url))
+            pub = html.escape(e.get("publisher", ""))
+            blocks.append(
+                f'<figure class="embed embed-link">'
+                f'<a href="{html.escape(url)}" rel="nofollow noopener" target="_blank">'
+                f'<span class="embed-link-title">{title}</span>'
+                f'<span class="embed-link-pub">{pub} — 製品画像は元記事でご覧いただけます</span>'
+                f'</a></figure>')
+    return "\n".join(blocks), needs_x
+
+
 def render_post(site: dict, p: dict, others: list[dict]) -> str:
     s = site["site"]
     cat = site["categories"].get(p.get("category"), {"label": "その他", "slug": "misc"})
+    embeds_html, needs_x = render_embeds(p)
+    if embeds_html:
+        embeds_html = f'<section class="embeds"><h2>公式の投稿・動画</h2>{embeds_html}</section>'
     sources = ""
     if p["sources"]:
         rows = "".join(
@@ -248,17 +298,23 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
 </script>"""
 
     return (
-        head(site, f"{p['title']} — {s['title']}", p["excerpt"], p["path"], ld,
+        head(site, f"{p['title']} — {s['title']}", p["excerpt"], p["path"],
+             ld + ('\n<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
+                   if needs_x else ""),
              image=f"ogp/{p['slug']}.png")
         + header(site)
         + f"""
 <main class="wrap article-wrap">
-  <article class="article">
+  <article class="article cat-{p.get("category", "misc")}">
     <p class="eyebrow"><a href="{u("category/" + cat['slug'] + ".html")}">{html.escape(cat['label'])}</a></p>
     <h1 class="article-title">{html.escape(p['title'])}</h1>
     {f'<p class="article-lede">{html.escape(p["kicker"])}</p>' if p.get('kicker') else ''}
     <p class="article-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>読了 {p['reading_min']}分</p>
+    <figure class="article-hero">
+      <img src="{u("cards/" + p['slug'] + ".png")}" alt="{html.escape(p['title'])}" width="1200" height="675">
+    </figure>
     <div class="prose">{p['body_html']}</div>
+    {embeds_html}
     {sources}
   </article>
   {rel_html}
@@ -387,11 +443,33 @@ a{color:inherit;text-decoration:none}
 .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
   margin:0 0 12px;font-weight:600}
 
+/* カテゴリ配色（アイキャッチの色と揃える） */
+.cat-smartphone{--cat:#b4472b}
+.cat-pc{--cat:#2f5863}
+.cat-weird{--cat:#6d5c2e}
+@media (prefers-color-scheme: dark){
+  .cat-smartphone{--cat:#e8825f}
+  .cat-pc{--cat:#7fb3bd}
+  .cat-weird{--cat:#c4ad6b}
+}
+.card-cat{color:var(--cat,var(--accent))!important}
+.article .eyebrow{color:var(--cat,var(--accent))}
+
+/* eyecatch */
+.card-thumb{display:block;margin:0 0 16px;overflow:hidden;background:var(--accent-soft);
+  border:1px solid var(--rule);border-radius:2px}
+.card-thumb img{display:block;width:100%;height:180px;object-fit:cover;object-position:left center;transition:transform .5s cubic-bezier(.2,.6,.2,1)}
+.card:hover .card-thumb img{transform:scale(1.02)}
+.card-featured .card-thumb{margin-bottom:26px}
+.card-featured .card-thumb img{height:300px}
+.article-hero{margin:0 0 40px;border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.article-hero img{display:block;width:100%;height:auto;max-height:420px;object-fit:cover;object-position:left center}
+
 /* cards */
 .lead{margin-bottom:56px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));
   gap:1px;background:var(--rule);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.card{background:var(--bg);padding:28px 26px 30px}
+.card{background:var(--bg);padding:26px 24px 30px}
 .card-featured{background:var(--bg);padding:0;border:0}
 .card-featured .card-title{font-size:clamp(24px,3.4vw,36px);line-height:1.4}
 .card-featured .card-excerpt{font-size:16.5px;max-width:34em;line-height:1.9}
@@ -434,6 +512,19 @@ a{color:inherit;text-decoration:none}
 .prose code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;
   background:var(--accent-soft);padding:2px 6px;border-radius:3px}
 .prose hr{border:0;border-top:1px solid var(--rule);margin:40px 0}
+
+/* embeds */
+.embeds{margin-top:52px;padding-top:26px;border-top:1px solid var(--rule)}
+.embeds h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 20px;font-weight:600}
+.embed{margin:0 0 28px}
+.embed figcaption{font-size:13px;color:var(--ink-3);margin-top:10px;line-height:1.75}
+.embed-video iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:2px;display:block}
+.embed-link a{display:block;padding:20px 22px;border:1px solid var(--rule);border-radius:2px;
+  transition:border-color .2s}
+.embed-link a:hover{border-color:var(--accent)}
+.embed-link-title{display:block;font-family:var(--serif);font-size:16px;line-height:1.6;margin-bottom:8px}
+.embed-link-pub{display:block;font-size:12.5px;color:var(--ink-3)}
 
 /* sources */
 .sources{margin-top:56px;padding-top:26px;border-top:1px solid var(--rule)}
@@ -511,9 +602,19 @@ def main() -> int:
             if ogp.render(p["title"], cat["label"], s_title := site["site"]["title"],
                           PUBLIC / "ogp" / f"{p['slug']}.png"):
                 made += 1
-        ogp.render(site["site"]["tagline"], "GADGET SIGNAL", site["site"]["title"],
+        ogp.render(site["site"]["tagline"], site["site"]["title"].upper(), site["site"]["title"],
                    PUBLIC / "ogp" / "default.png")
-        print(f"■ OGP画像 {made}枚" if made else "■ OGP画像: フォントが無いためスキップ")
+
+        cards = 0
+        for p in posts:
+            key = p.get("category")
+            cat = site["categories"].get(key, {"label": "その他"})
+            word = p.get("keyword") or cat["label"]
+            if ogp.render_card(word, cat["label"], key or "", site["site"]["title"],
+                               p["slug"], PUBLIC / "cards" / f"{p['slug']}.png"):
+                cards += 1
+        print(f"■ OGP画像 {made}枚 / アイキャッチ {cards}枚" if made
+              else "■ 画像生成: フォントが無いためスキップ")
     (PUBLIC / "index.html").write_text(render_index(site, posts), encoding="utf-8")
     (PUBLIC / "about.html").write_text(render_about(site), encoding="utf-8")
     for p in posts:

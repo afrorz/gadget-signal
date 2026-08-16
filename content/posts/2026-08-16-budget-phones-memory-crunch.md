@@ -1,6 +1,7 @@
 ---
 title: 米国の低価格スマホが前年比64%減 — メモリ高騰が「安いスマホ」から先に消している
 slug: budget-phones-memory-crunch
+keyword: 安いスマホが消える
 category: smartphone
 date: 2026-08-16
 priority: 10

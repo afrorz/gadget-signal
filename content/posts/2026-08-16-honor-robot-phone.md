@@ -1,11 +1,17 @@
 ---
 title: Honor Robot Phone 実機レビュー — 背面からジンバルが生えるスマホ、中国限定でCNY 9,999
 slug: honor-robot-phone
+keyword: Honor Robot Phone
 category: smartphone
 date: 2026-08-16
 priority: 20
 kicker: 本体からロボットアーム状のジンバルが伸び、単体で首を振って被写体を追う。GSMArenaの実機レビューは手ブレ補正を「スマホ史上最高」と評価しつつ、商品ではなく技術ショーケースだと結論づけている。
 tags: [Honor, ジンバル, カメラ, 中国]
+embeds:
+  - type: link
+    url: https://www.gsmarena.com/honor_robot_phone_handson_review-news-74184.php
+    title: "Honor Robot Phone のジンバル可動部を含む実機写真"
+    publisher: GSMArena
 sources:
   - title: "Honor Robot Phone hands-on review"
     url: https://www.gsmarena.com/honor_robot_phone_handson_review-news-74184.php

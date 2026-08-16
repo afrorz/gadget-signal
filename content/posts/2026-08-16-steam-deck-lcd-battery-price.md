@@ -1,6 +1,7 @@
 ---
 title: Steam Deck LCD版の交換バッテリーが179.99ドルに — 発売時から125%の値上げ
 slug: steam-deck-lcd-battery-price
+keyword: Steam Deckの電池
 category: pc
 date: 2026-08-16
 kicker: iFixit の Steam Deck LCD 用バッテリーが79.99ドル → 129.99ドル → 179.99ドルと二段階で上昇。OLED 版は79.99ドルのまま据え置きで、旧モデルだけが取り残されている。

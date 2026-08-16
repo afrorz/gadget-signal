@@ -1,6 +1,7 @@
 ---
 title: MeLE Quieter HD — ファンレスN150ミニPCに2.5インチベイが入った、450ドルから
 slug: mele-quieter-hd
+keyword: MeLE Quieter HD
 category: pc
 date: 2026-08-16
 kicker: 「ほぼポケットサイズ」で知られた MeLE Quieter シリーズの新型は、あえて厚くして 2.5 インチ SATA ベイを積んできた。ファンレスのまま NVMe と HDD を同居させる構成。

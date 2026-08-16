@@ -1,6 +1,7 @@
 ---
 title: 蚊をレーザーで撃ち落とす「Photon Matrix」が発売 — LiDAR＋mmWaveで6m、988ドルから
 slug: photon-matrix-mosquito-laser
+keyword: 蚊を撃つレーザー
 category: weird
 date: 2026-08-16
 kicker: LiDARとミリ波レーダーとAI画像認識で2〜20mmの飛翔体を検知し、レーザーで撃つ。家庭用の赤外線版が988ドル、産業用の青色レーザー版が1,088ドル。今月出荷予定。

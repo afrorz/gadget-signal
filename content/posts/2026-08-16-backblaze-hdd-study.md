@@ -1,6 +1,7 @@
 ---
 title: HDD 443,156台・166万ドライブ年の査読論文 — 故障率はHGSTがSeagateの41%、東芝が107%
 slug: backblaze-hdd-study
+keyword: HDD故障率の実証
 category: pc
 date: 2026-08-16
 kicker: Backblazeが公開してきた稼働データを、エセックス大学の研究者が回帰分析にかけて査読論文にした。年齢・容量・温度を揃えたうえでのメーカー別故障率が初めて出た。
