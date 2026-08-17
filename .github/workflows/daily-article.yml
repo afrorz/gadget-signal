@@ -19,6 +19,7 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
           claude_args: |
             --max-turns 80
             --allowedTools "WebSearch,WebFetch,Read,Write,Edit,Glob,Grep,Bash"
@@ -55,6 +56,13 @@ jobs:
 
             5. 候補を3本選ぶ。製品そのものの話を優先。カテゴリ（smartphone / pc / weird）が
                偏らないようにする。content/posts/ の既存ファイルを見て重複を避ける。
+
+               【重要】content/posts/ に既に <TODAY> の日付の記事がある場合の扱い:
+               - この実行が定時実行 (event_name = schedule) なら、本日分は作成済みとみなし、
+                 「本日分は作成済みのため終了」とログに出して何もせず終了してよい。
+               - この実行が手動実行 (event_name = workflow_dispatch) なら、既存記事とは
+                 別の製品を選んで3本追記する。既に記事があることを理由に終了してはいけない。
+               この実行の event_name は「${{ github.event_name }}」である。
 
             6. 元記事を必ず WebFetch で読む。見出しだけで書かない。
                スペック・価格・日付・調達額を正確に抜き出す。
