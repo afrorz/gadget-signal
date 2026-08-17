@@ -1,0 +1,102 @@
+name: 毎朝の記事下書きを作って公開
+
+on:
+  schedule:
+    # 23:00 UTC = 翌日 08:00 JST（ダイジェスト収集の 07:00 JST より後に走らせる）
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: |
+            --max-turns 80
+            --allowedTools "WebSearch,WebFetch,Read,Write,Edit,Glob,Grep,Bash"
+          prompt: |
+            あなたは合同会社スタープラチナが運営する海外ガジェットメディア「Gadget Terminal」
+            (https://gadgetterminal.com/) の編集担当です。今日ぶんの記事を3本書いて、
+            content/posts/ にコミットしてください。
+
+            ## この媒体の軸
+            業界ニュースではなく「ガジェットそのもの」を扱う。とくにクラウドファンディング発の
+            新製品（Kickstarter / Indiegogo / Makuake など）を最優先。
+            決算・訴訟・株価・市場シェアといった業界ニュースは扱わない。
+
+            ## 手順
+
+            1. 日本時間の今日の日付を求める。`TZ=Asia/Tokyo date +%Y-%m-%d` を実行すること。
+               以下これを <TODAY> と呼ぶ。
+
+            2. リポジトリ内の docs/PLAYBOOK.md を読む。記事の型・禁止事項・クラファン案件の
+               追加ルール・画像の扱いが書いてある。これが最優先の基準。
+
+            3. リポジトリ内の data/digest/<TODAY>.md を読む。無ければ前日の日付で探す。
+               `【クラファン】` が付いた項目を優先する。
+
+            4. ダイジェストが無い、またはクラファン案件が少ない場合は自分で探す。
+               - https://www.makuake.com/sitemap/project/9/ （末尾が新着）
+               - https://liliputing.com/feed
+               - https://www.cnx-software.com/feed/
+               - https://www.gizmochina.com/feed/
+               - https://newatlas.com/index.rss
+               - https://www.geeky-gadgets.com/feed/
+               - https://www.yankodesign.com/feed/
+               - https://hackaday.com/blog/feed/
+
+            5. 候補を3本選ぶ。製品そのものの話を優先。カテゴリ（smartphone / pc / weird）が
+               偏らないようにする。content/posts/ の既存ファイルを見て重複を避ける。
+
+            6. 元記事を必ず WebFetch で読む。見出しだけで書かない。
+               スペック・価格・日付・調達額を正確に抜き出す。
+
+            7. 各記事に実物が見える動画を1本つける。
+               a. WebSearch で「<製品名> YouTube review」「<製品名> hands-on」等を検索
+               b. 必ず存在確認する。次を WebFetch して title と author_name が返ることを確認:
+                  https://www.youtube.com/oembed?url=https%3A//www.youtube.com/watch%3Fv%3D<動画ID>&format=json
+                  エラーが返るIDは絶対に使わない
+               c. front matter に embeds として書く
+               d. 別製品の動画は貼らない。「同じシリーズの前世代」は別製品。
+                  無ければ embeds を省略する
+               画像ファイルの転載は絶対にしない。
+
+            8. 記事を3本書く。ファイル名は content/posts/<TODAY>-<slug>.md
+               front matter: title / slug / keyword / category / date / kicker / tags / embeds / sources
+               - keyword はアイキャッチに入る短い語（製品名など全角10文字程度まで）
+               - 元記事に無い数字を書かない／リークはリークと明記／円換算はしない
+               - クラファン案件は「まだ製品ではない」ことを必ず書く。納期遅延・仕様変更の
+                 リスク、調達額は取得時点の値であること
+               - 「日本から見るとどうか」を必ず入れる（技適・PSE・電波法、国内流通、価格）
+               - 既存記事（content/posts/ の .md）を1本読んで、front matter の書式と
+                 文体を合わせること
+
+            9. 【重要】書いたら必ず検証する。次を順に実行し、両方通ってからコミットすること。
+               a. python3 -c "import yaml,glob;[yaml.safe_load(open(f,encoding='utf-8').read().split('---',2)[1]) for f in glob.glob('content/posts/<TODAY>-*.md')]"
+                  → front matter のYAMLが壊れていないか。英語タイトルにコロン(:)が含まれる場合は
+                    必ずダブルクォートで囲むこと。ここが最も壊れやすい。
+               b. pip install -r requirements.txt --break-system-packages -q && python3 scripts/build.py
+                  → 「記事 N本」の N が、既存記事数＋3 になっていることを確認
+               どちらかが失敗したら記事を直して、通るまでコミットしない。
+
+            10. 検証が通ったら git でコミットして main に push する。
+                コミットメッセージは「記事3本追加 <TODAY>」。
+                public/ ディレクトリはコミットしない（ビルド生成物のため）。
+
+            11. https://gadgetterminal.com/sitemap.xml の /posts/ の件数を数える。
+                30本以上になっていたら、最後に次を出力する:
+                「記事が30本を超えました。PR TIMES のメディアユーザー登録を申請する時期です。
+                 文面は docs/PRTIMES申請.md に用意してあります」
+
+            ## 注意
+            - 事実の捏造は絶対にしない。動画IDも必ず存在確認してから使う。
+            - 情報が取れないソースがあっても止まらず、取れたもので進める。
+            - 3本揃わない場合は、書けた本数だけコミットして、理由をログに書く。
