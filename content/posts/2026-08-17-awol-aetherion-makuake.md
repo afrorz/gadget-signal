@@ -4,6 +4,7 @@ slug: awol-aetherion-makuake
 keyword: Aetherion
 category: pc
 date: 2026-08-17
+priority: 30
 kicker: 海外ではKickstarterで1,800万ドル超を集めて出荷とレビューまで終わった超短焦点プロジェクターが、8月18日から日本のクラウドファンディングに出てくる。
 tags: [プロジェクター, 超短焦点, RGBレーザー, クラウドファンディング, Makuake, AWOL Vision]
 embeds:
