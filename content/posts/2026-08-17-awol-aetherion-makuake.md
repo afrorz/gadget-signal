@@ -17,7 +17,7 @@ sources:
   - title: AWOL Vision Aetherion - A 4K ultra short throw RGB laser projector with VRR and 3300 ISO lumens (Crowdfunding)
     url: https://www.cnx-software.com/2026/03/30/awol-vision-aetherion-4k-ultra-short-throw-rgb-laser-projector-with-vrr-and-3300-iso-lumens/
     publisher: CNX Software
-  - title: Review: The crispiest wall-hugging laser projector we've seen yet
+  - title: "Review: The crispiest wall-hugging laser projector we've seen yet"
     url: https://newatlas.com/home-entertainment/review-awol-vision-aetherion-max/
     publisher: New Atlas
 ---
