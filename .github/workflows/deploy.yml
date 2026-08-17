@@ -10,6 +10,11 @@ on:
       - "requirements.txt"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
+  # 記事作成ワークフローが終わったら、その後に必ずビルドする。
+  # GitHub App が push したコミットは push イベントを発火しないため、これが必要。
+  workflow_run:
+    workflows: ["毎朝の記事下書きを作って公開"]
+    types: [completed]
 
 permissions:
   contents: read
