@@ -207,7 +207,7 @@ def render_index(site: dict, posts: list[dict]) -> str:
         body = '<p class="empty">まだ記事がありません。</p>'
     else:
         lead, rest = posts[0], posts[1:]
-        rows = "".join(board_row(site, p, i + 1) for i, p in enumerate(posts[:12]))
+        rows = "".join(board_row(site, p, i + 1) for i, p in enumerate(posts[:7]))
         body = f"""
 <section class="board">
   <div class="board-head">
@@ -552,7 +552,7 @@ img{max-width:100%}
 .b-date{color:var(--ink-3);font-variant-numeric:tabular-nums}
 .b-key{font-family:var(--sans);font-size:13px;color:var(--ink);font-weight:600;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.b-title{font-family:var(--sans);font-size:12.5px;color:var(--ink-2);overflow:hidden;
+.b-title{font-family:var(--sans);font-size:12.5px;color:#bcc6d1;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap}
 .b-min{color:var(--ink-3);text-align:right}
 .b-arrow{color:var(--ink-3);text-align:right;transition:transform .2s,color .2s}
