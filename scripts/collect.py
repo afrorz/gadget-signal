@@ -27,6 +27,10 @@ from urllib.parse import urlparse, urlunparse
 import feedparser
 import yaml
 
+if sys.platform == "win32":  # Windows のコンソールは既定 cp932。出力を UTF-8 に固定する
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 try:
     import crowdfunding
 except Exception:  # 収集モジュールが無くてもRSS収集は動かす

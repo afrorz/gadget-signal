@@ -21,12 +21,17 @@ import argparse
 import html
 import re
 import shutil
+import sys
 from datetime import datetime, timezone, timedelta
 from email.utils import format_datetime
 from pathlib import Path
 
 import markdown
 import yaml
+
+if sys.platform == "win32":  # Windows のコンソールは既定 cp932。出力を UTF-8 に固定する
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 
 try:
     import ogp
