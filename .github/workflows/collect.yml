@@ -2,8 +2,8 @@ name: 日次ダイジェスト収集
 
 on:
   schedule:
-    # JST 07:00 (UTC 22:00) — 米国の夕方＋欧州の深夜ぶんが出そろったタイミング
-    - cron: "0 22 * * *"
+    # JST 22:30 (UTC 13:30) — 記事生成(23:00 JST)の30分前に最新ダイジェストを揃える
+    - cron: "30 13 * * *"
   workflow_dispatch:
 
 permissions:

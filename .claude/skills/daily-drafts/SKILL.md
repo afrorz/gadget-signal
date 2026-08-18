@@ -11,7 +11,7 @@ description: Gadget Terminal の毎朝の記事ドラフトを3本作る。ダ�
 
 ### 1. ダイジェストを用意する
 
-まず `git pull` する。GitHub Actions が毎朝 JST 07:00 に収集して `data/digest/` にコミットしているので、
+まず `git pull` する。GitHub Actions が毎晩 JST 22:30 に収集して `data/digest/` にコミットしているので、
 その日のダイジェストは既にあることが多い。
 
 ```bash

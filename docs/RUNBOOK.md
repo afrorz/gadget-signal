@@ -36,7 +36,11 @@ gh repo create <あなたのアカウント>/gadget-signal --public --source=. -
 
 ## 2. 定時実行
 
-`.github/workflows/collect.yml` が毎朝 **JST 07:00** に収集を実行し、`data/digest/` にコミットする。
+`.github/workflows/collect.yml` が毎晩 **JST 22:30** に収集を実行し、`data/digest/` にコミットする。
+その30分後の **JST 23:00** に `daily-article.yml` が記事を生成する。
+
+記事生成は `claude_code_oauth_token` を使うため **Claude サブスクリプションの利用枠を消費する**（GitHub Actions の実行時間自体は public リポジトリなので無料）。
+日中の作業と5時間ウィンドウを取り合わないよう、意図的に夜に寄せてある。時刻を変えるときはこの点を考慮すること。
 手元で回すなら:
 
 ```bash
@@ -48,6 +52,8 @@ python3 scripts/collect.py --top 30
 | やりたい時刻(JST) | cron (UTC) |
 |---|---|
 | 07:00 | `0 22 * * *` |
+| 22:30 | `30 13 * * *` |
+| 23:00 | `0 14 * * *` |
 | 09:00 | `0 0 * * *` |
 | 07:00 と 19:00 | `0 22,10 * * *` |
 

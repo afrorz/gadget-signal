@@ -49,7 +49,8 @@ python scripts/build.py                 # content/posts → public/
 python scripts/build.py --serve         # http://localhost:8000 で確認
 ```
 
-収集は `.github/workflows/collect.yml` が毎朝 JST 07:00 に自動実行し、`data/digest/` にコミットする。
+収集は `.github/workflows/collect.yml` が毎晩 JST 22:30 に自動実行し、`data/digest/` にコミットする。
+その30分後の JST 23:00 に `daily-article.yml` が記事3本を生成する（Claude の利用枠を消費するため、日中を避けて夜に寄せてある）。
 **手元で collect.py を回す前に `git pull` すれば、その日のダイジェストは既にあることが多い。**
 
 ## ディレクトリ

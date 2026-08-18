@@ -35,7 +35,7 @@ git add . && git commit -m "post: ..." && git push
 ```
 
 `git push` すると `.github/workflows/deploy.yml` が走り、GitHub Pages に反映される。
-収集自体も `.github/workflows/collect.yml` で毎朝 JST 07:00 に自動実行される（手元で回さなくてよい）。
+収集自体も `.github/workflows/collect.yml` で毎晩 JST 22:30 に自動実行される（手元で回さなくてよい）。
 
 ---
 
