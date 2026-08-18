@@ -37,11 +37,11 @@
       "WebFetch(domain:www.kickstarter.com)",
       "WebFetch(domain:www.indiegogo.com)",
       "WebFetch(domain:www.makuake.com)",
-      "WebFetch(domain:www.youtube.com)"
+      "WebFetch(domain:www.youtube.com)",
+      "Bash(git push *)",
+      "PowerShell(git push *)"
     ],
     "deny": [
-      "Bash(git push *)",
-      "PowerShell(git push *)",
       "Bash(gh repo delete *)",
       "Write(//d/My Document/ClaudeApp/GadgetTerminal/public/**)",
       "Edit(//d/My Document/ClaudeApp/GadgetTerminal/public/**)"
