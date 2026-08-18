@@ -1,0 +1,50 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python scripts/collect.py *)",
+      "Bash(python scripts/build.py *)",
+      "Bash(python -m py_compile *)",
+      "Bash(pip install -r requirements.txt)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git pull *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Read(//d/My Document/ClaudeApp/GadgetTerminal/**)",
+      "Write(//d/My Document/ClaudeApp/GadgetTerminal/content/posts/**)",
+      "Edit(//d/My Document/ClaudeApp/GadgetTerminal/content/posts/**)",
+      "Edit(//d/My Document/ClaudeApp/GadgetTerminal/config/**)",
+      "WebFetch(domain:www.gsmarena.com)",
+      "WebFetch(domain:www.androidauthority.com)",
+      "WebFetch(domain:9to5google.com)",
+      "WebFetch(domain:9to5mac.com)",
+      "WebFetch(domain:www.xda-developers.com)",
+      "WebFetch(domain:www.sammobile.com)",
+      "WebFetch(domain:www.notebookcheck.net)",
+      "WebFetch(domain:videocardz.com)",
+      "WebFetch(domain:www.techpowerup.com)",
+      "WebFetch(domain:www.tomshardware.com)",
+      "WebFetch(domain:www.guru3d.com)",
+      "WebFetch(domain:www.phoronix.com)",
+      "WebFetch(domain:liliputing.com)",
+      "WebFetch(domain:www.gizmochina.com)",
+      "WebFetch(domain:hackaday.com)",
+      "WebFetch(domain:www.yankodesign.com)",
+      "WebFetch(domain:www.cnx-software.com)",
+      "WebFetch(domain:thegadgetflow.com)",
+      "WebFetch(domain:rsshub.app)",
+      "WebFetch(domain:www.kickstarter.com)",
+      "WebFetch(domain:www.indiegogo.com)",
+      "WebFetch(domain:www.makuake.com)",
+      "WebFetch(domain:www.youtube.com)"
+    ],
+    "deny": [
+      "Bash(git push *)",
+      "PowerShell(git push *)",
+      "Bash(gh repo delete *)",
+      "Write(//d/My Document/ClaudeApp/GadgetTerminal/public/**)",
+      "Edit(//d/My Document/ClaudeApp/GadgetTerminal/public/**)"
+    ]
+  }
+}
