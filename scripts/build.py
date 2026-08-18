@@ -206,11 +206,32 @@ def board_row(site: dict, p: dict, i: int) -> str:
 </a>"""
 
 
-def render_index(site: dict, posts: list[dict]) -> str:
+def page_path(n: int) -> str:
+    """ページ番号 → サイト内パス。1ページ目だけルートに置く。"""
+    return "index.html" if n <= 1 else f"page/{n}.html"
+
+
+def pager(current: int, total: int) -> str:
+    """前へ／次へ と現在位置を出すページ送り。1ページしかないときは何も出さない。"""
+    if total <= 1:
+        return ""
+    prev = (f'<a class="pager-link" href="{u(page_path(current - 1))}" rel="prev">← 新しい記事</a>'
+            if current > 1 else '<span class="pager-link is-off">← 新しい記事</span>')
+    nxt = (f'<a class="pager-link" href="{u(page_path(current + 1))}" rel="next">古い記事 →</a>'
+           if current < total else '<span class="pager-link is-off">古い記事 →</span>')
+    nums = "".join(
+        f'<span class="pager-num is-here">{n}</span>' if n == current
+        else f'<a class="pager-num" href="{u(page_path(n))}">{n}</a>'
+        for n in range(1, total + 1))
+    return f'<nav class="pager" aria-label="ページ送り">{prev}<span class="pager-nums">{nums}</span>{nxt}</nav>'
+
+
+def render_index(site: dict, posts: list[dict], page: int = 1, total_pages: int = 1) -> str:
     s = site["site"]
     if not posts:
         body = '<p class="empty">まだ記事がありません。</p>'
-    else:
+    elif page <= 1:
+        # 1ページ目だけ、案内板と大きい先頭記事を出す。
         lead, rest = posts[0], posts[1:]
         rows = "".join(board_row(site, p, i + 1) for i, p in enumerate(posts[:7]))
         body = f"""
@@ -225,16 +246,25 @@ def render_index(site: dict, posts: list[dict]) -> str:
 </section>
 <section class="grid">
   {''.join(card(site, p) for p in rest)}
-</section>"""
+</section>
+{pager(page, total_pages)}"""
+    else:
+        # 2ページ目以降はカードだけを並べる。
+        body = f"""
+<section class="grid">
+  {''.join(card(site, p) for p in posts)}
+</section>
+{pager(page, total_pages)}"""
+    title = f"{s['title']} — {s['tagline']}" if page <= 1 else f"{s['title']} — {page}ページ目"
     return (
-        head(site, f"{s['title']} — {s['tagline']}", s["description"], "index.html")
+        head(site, title, s["description"], page_path(page))
         + header(site)
         + f"""
 <main class="wrap">
-  <section class="hero">
-    <p class="eyebrow">DEPARTURES / 海外発</p>
-    <h1 class="hero-title">{html.escape(s['tagline'])}</h1>
-    <p class="hero-sub">{html.escape(s['description'])}</p>
+  <section class="hero{'' if page <= 1 else ' hero-sm'}">
+    <p class="eyebrow">{'DEPARTURES / 海外発' if page <= 1 else f'ARCHIVE / {page} of {total_pages}'}</p>
+    <h1 class="hero-title">{html.escape(s['tagline']) if page <= 1 else f'過去の記事 — {page}ページ目'}</h1>
+    <p class="hero-sub">{html.escape(s['description']) if page <= 1 else ''}</p>
   </section>
   {body}
 </main>"""
@@ -472,6 +502,9 @@ def render_feed(site: dict, posts: list[dict]) -> str:
 def render_sitemap(site: dict, posts: list[dict]) -> str:
     base = site["site"]["base_url"].rstrip("/")
     urls = [f"{base}/", f"{base}/about.html"]
+    per_page = int(site["site"].get("posts_per_page") or 20)
+    total_pages = max(1, -(-len(posts) // per_page))
+    urls += [f"{base}/{page_path(n)}" for n in range(2, total_pages + 1)]
     urls += [f"{base}/category/{c['slug']}.html" for c in site["categories"].values()]
     urls += [f"{base}/{p['path']}" for p in posts]
     body = "".join(f"<url><loc>{u}</loc></url>" for u in urls)
@@ -563,6 +596,21 @@ img{max-width:100%}
 .b-arrow{color:var(--ink-3);text-align:right;transition:transform .2s,color .2s}
 .board-row:hover .b-arrow{color:var(--cat);transform:translateX(3px)}
 .board-row:hover .b-title{color:var(--ink)}
+
+/* ── ページ送り ─────────────────────────────── */
+.pager{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin:36px 0 8px;padding-top:20px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:12px;letter-spacing:.04em}
+.pager-link{color:var(--ink-2);text-decoration:none;padding:6px 10px;border:1px solid var(--rule-2);border-radius:3px}
+.pager-link:hover{color:var(--ink);border-color:var(--accent)}
+.pager-link.is-off{opacity:.32;border-style:dashed}
+.pager-nums{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.pager-num{color:var(--ink-3);text-decoration:none;min-width:26px;text-align:center;padding:6px 4px;border-radius:3px}
+.pager-num:hover{color:var(--ink)}
+.pager-num.is-here{color:var(--bg);background:var(--accent);font-weight:600}
+@media (max-width:520px){
+  .pager{flex-direction:column;gap:12px}
+}
 
 /* ── カード ─────────────────────────────────── */
 .lead{margin-bottom:8px}
@@ -768,7 +816,16 @@ def main() -> int:
                 cards += 1
         print(f"■ OGP画像 {made}枚 / アイキャッチ {cards}枚" if made
               else "■ 画像生成: フォントが無いためスキップ")
-    (PUBLIC / "index.html").write_text(render_index(site, posts), encoding="utf-8")
+    # ページ送り。site.yaml の posts_per_page 件ずつに切る（1ページ目は先頭記事を含む）。
+    per_page = int(site["site"].get("posts_per_page") or 20)
+    pages = [posts[i:i + per_page] for i in range(0, len(posts), per_page)] or [[]]
+    total_pages = len(pages)
+    for n, chunk in enumerate(pages, start=1):
+        out = PUBLIC / page_path(n)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(render_index(site, chunk, n, total_pages), encoding="utf-8")
+    if total_pages > 1:
+        print(f"■ ページ送り {total_pages}ページ ({per_page}件/ページ)")
     (PUBLIC / "about.html").write_text(render_about(site), encoding="utf-8")
     for p in posts:
         (PUBLIC / p["path"]).write_text(render_post(site, p, posts), encoding="utf-8")
