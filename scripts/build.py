@@ -90,15 +90,25 @@ def parse_post(path: Path) -> dict | None:
 
 # ────────────────────────────── テンプレート ──────────────────────────────
 def analytics(s: dict) -> str:
-    """site.yaml に analytics_id があれば GA4 のタグを出す。空なら何も出さない。"""
+    """アクセス解析のタグを出す。設定が空なら何も出さない（外部スクリプトを読み込まない）。
+
+    - cf_analytics_token: Cloudflare Web Analytics。Cookie を使わないので同意表示が不要
+    - analytics_id: GA4。使う場合は G- で始まる測定ID
+    両方入れれば両方出る。
+    """
+    tags = []
+    token = str(s.get("cf_analytics_token") or "").strip()
+    if token:
+        tags.append('<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+                    f"data-cf-beacon='{{\"token\": \"{token}\"}}'></script>")
     gid = str(s.get("analytics_id") or "").strip()
-    if not gid:
-        return ""
-    return (f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>'
-            "<script>window.dataLayer=window.dataLayer||[];"
-            "function gtag(){dataLayer.push(arguments);}"
-            "gtag('js',new Date());"
-            f"gtag('config','{gid}');</script>")
+    if gid:
+        tags.append(f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>'
+                    "<script>window.dataLayer=window.dataLayer||[];"
+                    "function gtag(){dataLayer.push(arguments);}"
+                    "gtag('js',new Date());"
+                    f"gtag('config','{gid}');</script>")
+    return "".join(tags)
 
 
 def head(site: dict, title: str, desc: str, url_path: str, extra: str = "",

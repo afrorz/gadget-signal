@@ -12,6 +12,10 @@ site:
   copyright_from: 2026
   posts_per_page: 20
   # 収益化は後回し。有効化するときは true にしてタグを入れる
+  # アクセス解析。Cloudflare Web Analytics（Cookie 不使用）を使う。
+  # ダッシュボード → Web Analytics → サイトを追加 で発行されるトークンを入れる。
+  cf_analytics_token: "a114276e3ee147cc9bcdc2edf684b9fc"
+  # GA4 を併用する場合のみ。G- で始まる測定ID
   analytics_id: ""
   affiliate:
     enabled: false

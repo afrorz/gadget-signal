@@ -31,20 +31,31 @@ gh repo create <あなたのアカウント>/gadget-signal --public --source=. -
 
 - Google Search Console にプロパティを追加 → `sitemap.xml` を送信
 
-### アクセス解析（Google Analytics）
+### アクセス解析（Cloudflare Web Analytics）
 
-`config/site.yaml` の `analytics_id` に GA4 の測定ID（`G-` で始まる）を入れるだけ。
-全ページの `<head>` に gtag のタグが入る。空文字のあいだは**タグを一切出さない**ので、
-設定するまでは外部スクリプトを読み込まない。
+`config/site.yaml` の `cf_analytics_token` にトークンを入れると、全ページの `<head>` に
+ビーコンのスクリプトが入る。**Cookie を使わないので同意表示は不要。**
+空文字のあいだはタグを一切出さないので、外部スクリプトも読み込まない。
 
-```yaml
-analytics_id: "G-XXXXXXXXXX"
-```
+レポートは https://dash.cloudflare.com/ → Analytics → Web analytics で見る。
 
-測定IDの取り方: https://analytics.google.com/ → 管理 → プロパティを作成 →
-データストリーム → ウェブ → URL に `https://gadgetterminal.com` を入れる → 測定IDが表示される。
+**設定方法に注意点がある。** `gadgetterminal.com` は Cloudflare で DNS だけを管理し、
+通信は GitHub Pages に直接届く構成（グレー雲）。このため Cloudflare が提示してくる
+「自動セットアップ」は**機能しない**（プロキシを通過しない通信にはビーコンを注入できないため）。
 
-計測を止めたいときは `analytics_id` を空に戻して再ビルドすれば、タグごと消える。
+サイト追加時にホスト名を入力したら、候補の**下段**にある
+「Click here to use "gadgetterminal.com" which does not belong to Cloudflare websites」
+を選ぶこと。これで JS スニペット方式になり、トークンが発行される。
+
+計測を止めたいときは `cf_analytics_token` を空に戻して再ビルドすれば、タグごと消える。
+
+### GA4 を併用する場合
+
+`analytics_id` に測定ID（`G-` で始まる）を入れれば、Cloudflare と併用できる。
+
+ただし `analytics.google.com` は広告ブロック系の遮断リストに載っており、
+**開発環境のネットワークからは管理画面を開けない**（DNS が経路上で書き換えられている）。
+Chrome のセキュア DNS を有効にすれば開けるが、常用は勧めない。
 - 最初の 2〜3 週間はインデックスされない。焦らない
 
 ---
