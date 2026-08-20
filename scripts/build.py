@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import json
 import re
 import shutil
 import sys
@@ -427,7 +428,14 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
   <p class="sources-note">本記事は上記の海外報道をもとに編集部が構成したものです。日本国内の発売・価格は各社の公式発表をご確認ください。</p>
 </section>"""
 
-    related = [o for o in others if o["slug"] != p["slug"]][:3]
+    # 関連記事はタグの一致数で選ぶ。同数ならカテゴリ一致、それも同じなら新しい順。
+    # 機械的に先頭3本を出すより回遊率が上がり、内部リンクの意味も強くなる。
+    my_tags = {str(t).lower() for t in (p.get("tags") or [])}
+    def relevance(o: dict) -> tuple:
+        shared = len(my_tags & {str(t).lower() for t in (o.get("tags") or [])})
+        same_cat = 1 if o.get("category") == p.get("category") else 0
+        return (-shared, -same_cat, o["date"] < p["date"], o["date"])
+    related = sorted((o for o in others if o["slug"] != p["slug"]), key=relevance)[:3]
     rel_html = ""
     if related:
         rel_html = f"""
@@ -436,15 +444,63 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
   <div class="grid">{''.join(card(site, r) for r in related)}</div>
 </section>"""
 
-    ld = f"""<script type="application/ld+json">
-{{"@context":"https://schema.org","@type":"NewsArticle",
-"headline":{_json_str(p['title'])},"datePublished":"{p['date']}",
-"description":{_json_str(p['excerpt'])},
-"publisher":{{"@type":"Organization","name":{_json_str(s['title'])}}}}}
-</script>"""
+    base = s["base_url"].rstrip("/")
+    page_url = f"{base}/{p['path']}"
+    # OGP画像は必ず存在する（生成される）ので、これを構造化データの image にも使う。
+    # thumbnail がある記事は実写のほうが望ましいので、そちらを優先する。
+    ld_image = str(p["thumbnail"]) if p.get("thumbnail") else f"{base}/ogp/{p['slug']}.png"
+    article_ld = {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": p["title"][:110],
+        "description": p["excerpt"],
+        "image": [ld_image],
+        "datePublished": f"{p['date']}T09:00:00+09:00",
+        "dateModified": f"{p.get('modified') or p['date']}T09:00:00+09:00",
+        "url": page_url,
+        "mainEntityOfPage": {"@type": "WebPage", "@id": page_url},
+        "inLanguage": "ja",
+        "articleSection": cat["label"],
+        "author": {"@type": "Organization", "name": s["author"], "url": base + "/about.html"},
+        "publisher": {"@type": "Organization", "name": s["title"],
+                      "logo": {"@type": "ImageObject", "url": f"{base}/ogp/default.png"}},
+    }
+    if p.get("tags"):
+        article_ld["keywords"] = ", ".join(str(t) for t in p["tags"])
+    breadcrumb_ld = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": s["title"], "item": base + "/"},
+            {"@type": "ListItem", "position": 2, "name": cat["label"],
+             "item": f"{base}/category/{cat['slug']}.html"},
+            {"@type": "ListItem", "position": 3, "name": p["title"], "item": page_url},
+        ],
+    }
+    # front matter の faq を FAQPage として出す。検索結果に Q&A が展開されることがある。
+    # ガジェット記事は「技適は?」「日本で使える?」が定番クエリなので効きやすい。
+    faq = [x for x in (p.get("faq") or []) if x.get("q") and x.get("a")]
+    faq_ld = None
+    faq_html = ""
+    if faq:
+        faq_ld = {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [{"@type": "Question", "name": str(x["q"]),
+                            "acceptedAnswer": {"@type": "Answer", "text": str(x["a"])}}
+                           for x in faq],
+        }
+        rows = "".join(
+            f'<div class="faq-item"><h3>{html.escape(str(x["q"]))}</h3>'
+            f'<p>{html.escape(str(x["a"]))}</p></div>' for x in faq)
+        faq_html = f'<section class="faq"><h2>よくある質問</h2>{rows}</section>'
+
+    ld = "".join(
+        f'<script type="application/ld+json">{json.dumps(d, ensure_ascii=False, separators=(",", ":"))}</script>'
+        for d in (article_ld, breadcrumb_ld, faq_ld) if d)
 
     return (
-        head(site, f"{p['title']} — {s['title']}", p["excerpt"], p["path"],
+        head(site, f"{p.get('seo_title') or p['title']} — {s['title']}", p["excerpt"], p["path"],
              ld + ('\n<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
                    if needs_x else ""),
              image=f"ogp/{p['slug']}.png")
@@ -459,7 +515,8 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
     {hero_block}
     <div class="prose">{p['body_html']}</div>
     {embeds_html}
-    {sources}
+    {faq_html}
+  {sources}
   </article>
   {rel_html}
 </main>"""
@@ -542,7 +599,14 @@ def render_sitemap(site: dict, posts: list[dict]) -> str:
     urls += [f"{base}/{page_path(n)}" for n in range(2, total_pages + 1)]
     urls += [f"{base}/category/{c['slug']}.html" for c in site["categories"].values()]
     urls += [f"{base}/{p['path']}" for p in posts]
-    body = "".join(f"<url><loc>{u}</loc></url>" for u in urls)
+    # lastmod があるとクローラーが再訪問すべきURLを判断できる。
+    # 記事は自身の日付、一覧系は最新記事の日付を使う。
+    latest = max((p["date"] for p in posts), default="")
+    by_url = {f"{base}/{p['path']}": p["date"] for p in posts}
+    def entry(loc: str) -> str:
+        d = by_url.get(loc, latest)
+        return f"<url><loc>{loc}</loc>" + (f"<lastmod>{d}</lastmod>" if d else "") + "</url>"
+    body = "".join(entry(u) for u in urls)
     return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{body}</urlset>'
 
 
@@ -747,6 +811,11 @@ img{max-width:100%}
 .src-pub{font-family:var(--mono);color:var(--ink-3);font-size:11.5px;margin-left:9px}
 .sources-note{font-size:12.5px;color:var(--ink-3);line-height:1.85;margin:0}
 
+.faq{max-width:var(--measure);margin:44px 0 0;padding-top:24px;border-top:1px solid var(--rule)}
+.faq h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
+.faq-item{margin:0 0 18px}
+.faq-item h3{font-size:15px;margin:0 0 6px;line-height:1.6}
+.faq-item p{margin:0;color:var(--ink-2);font-size:14px;line-height:1.85}
 .related{max-width:var(--max);margin:56px auto 0}
 .related h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
   color:var(--ink-3);margin:0 0 22px;font-weight:600}
@@ -821,6 +890,12 @@ def main() -> int:
     # 日付 → priority（front matter で 1 以上を指定するとその日の先頭に来る）→ slug
     posts.sort(key=lambda p: (p["date"], p.get("priority", 0), p["slug"]), reverse=True)
     print(f"■ 記事 {len(posts)}本")
+    long_titles = [p for p in posts if len(p.get("seo_title") or p["title"]) > 34]
+    if long_titles:
+        print(f"! 検索用タイトルが長い記事 {len(long_titles)}本 "
+              f"(Google は全角32字前後で切る。front matter に seo_title を足すと直る)")
+        for p_ in long_titles[:3]:
+            print(f"    {len(p_.get('seo_title') or p_['title'])}字 {p_['slug']}")
 
     if PUBLIC.exists():
         shutil.rmtree(PUBLIC)
@@ -874,6 +949,15 @@ def main() -> int:
         f"User-agent: *\nAllow: /\nSitemap: {site['site']['base_url'].rstrip('/')}/sitemap.xml\n",
         encoding="utf-8")
     (PUBLIC / ".nojekyll").write_text("", encoding="utf-8")
+
+    # IndexNow の所有者確認ファイル。ルートに <key>.txt を置き、中身はキーそのもの。
+    # これが無いと通知が 403 で弾かれる。
+    key_file = ROOT / ".indexnow-key"
+    if key_file.exists():
+        k = key_file.read_text(encoding="ascii").strip()
+        if k:
+            (PUBLIC / f"{k}.txt").write_text(k, encoding="ascii")
+            print(f"■ IndexNow キーファイル: {k}.txt")
 
     # 独自ドメイン用の CNAME。base_url のホスト名から自動生成する。
     # GitHub Pages はこのファイルを見て独自ドメインを認識するため、

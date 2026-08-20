@@ -52,3 +52,18 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # 公開が終わってから検索エンジンに通知する。
+  # 反映前に通知するとクローラーが古い内容を取得してしまうため、必ず deploy の後。
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install PyYAML
+      - name: IndexNow に通知する
+        run: python3 scripts/indexnow.py --days 2
+        continue-on-error: true

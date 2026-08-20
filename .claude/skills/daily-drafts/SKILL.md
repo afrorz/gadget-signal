@@ -66,11 +66,15 @@ python scripts/collect.py --top 30
 ```markdown
 ---
 title: 固有名詞と数字を含むタイトル（「話題」「すごい」は禁止）
+seo_title: 検索結果用。全角32字以内。製品名を先頭に置く
 slug: url-safe-slug
 category: smartphone | pc | weird
 date: YYYY-MM-DD
 kicker: 何が起きたかを言い切る一文リード
 tags: [タグ, タグ]
+faq:
+  - q: 日本で買えますか
+    a: 本文で答えている内容を質問形に言い換える。本文に無いことは書かない
 sources:
   - title: 元記事タイトル
     url: https://...
