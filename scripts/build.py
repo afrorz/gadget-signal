@@ -371,11 +371,23 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
     embeds_html = rest_embed
 
     # 動画がある記事は生成画像を出さない。実写のほうが情報量が多い。
+    # 動画が無く thumbnail がある場合は、そちらを実写として出す。
+    # 外部URLのときは自社サーバーに複製せず、権利者のサーバーを直接参照する。
+    fallback = u("cards/" + p["slug"] + ".png")
     if lead_embed:
         hero_block = lead_embed
+    elif p.get("thumbnail"):
+        th = str(p["thumbnail"])
+        credit = p.get("thumbnail_credit")
+        cap = (f'<figcaption class="hero-credit">出典: {html.escape(str(credit))}</figcaption>'
+               if credit else "")
+        onerr = 'this.onerror=null;this.src=' + repr(fallback)
+        hero_block = (f'<figure class="article-hero article-hero-real">'
+                      f'<img src="{html.escape(th)}" alt="{html.escape(p["title"])}" '
+                      f'onerror="{onerr}">{cap}</figure>')
     else:
         hero_block = (f'<figure class="article-hero">'
-                      f'<img src="{u("cards/" + p["slug"] + ".png")}" '
+                      f'<img src="{fallback}" '
                       f'alt="{html.escape(p["title"])}" width="1200" height="675"></figure>')
     sources = ""
     if p["sources"]:
@@ -660,6 +672,7 @@ img{max-width:100%}
   display:flex;align-items:center;gap:10px;padding-bottom:20px;border-bottom:1px solid var(--rule);margin:0}
 .dot{width:3px;height:3px;border-radius:50%;background:var(--ink-3);display:inline-block}
 .article-hero{margin:0 0 30px;border-bottom:1px solid var(--rule)}
+.hero-credit{padding:8px 0 10px;color:var(--ink-3);font-family:var(--mono);font-size:11px;letter-spacing:.03em}
 .article-hero img{display:block;width:100%;height:auto;max-height:220px;object-fit:cover;object-position:left center}
 .prose{font-size:15.5px;line-height:1.9;color:var(--ink)}
 .prose h2{font-family:var(--disp);font-size:19px;line-height:1.5;margin:38px 0 14px;font-weight:700;

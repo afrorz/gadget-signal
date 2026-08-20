@@ -6,6 +6,8 @@ category: weird
 date: 2026-08-17
 kicker: 顎の骨を伝わる振動で発話を拾う骨伝導イヤホンに、翻訳・文字起こし・要約・マインドマップ生成までを詰め込んだ製品がMakuakeに登場する。開始は8月19日10時。
 tags: [クラウドファンディング, Makuake, 骨伝導, イヤホン, AI, QIQIK]
+thumbnail: "https://static.makuake.com/upload/project/53159/main_53159.jpg?version=1786690638&width=690&height=388"
+thumbnail_credit: Makuake プロジェクトページ（QIQIK）
 sources:
   - title: 騒音の中でも声をクリアに。骨伝導×AIで、翻訳・録音・要約までこなすイヤホン
     url: https://www.makuake.com/project/aismartearphone/

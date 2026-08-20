@@ -6,6 +6,8 @@ category: weird
 date: 2026-08-17
 kicker: 眼鏡の上から装着できる瞬間調光サングラスの最新モデルが8月19日11時にMakuakeで応援購入を開始する。今回の目玉は、従来の偏光レンズでは見えにくかったカーナビなどの液晶画面への対応だ。
 tags: [クラウドファンディング, Makuake, サングラス, 瞬間調光, トライアングル, 福井]
+thumbnail: "https://static.makuake.com/upload/project/53051/main_53051.jpg?version=1785971420&width=690&height=388"
+thumbnail_credit: Makuake プロジェクトページ（トライアングル）
 sources:
   - title: メガネの上から簡単装着！より見やすくなった液晶画面対応瞬間調光オーバーグラス
     url: https://www.makuake.com/project/try-angle_glasses135/

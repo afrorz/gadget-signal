@@ -75,7 +75,21 @@ jobs:
                c. front matter に embeds として書く
                d. 別製品の動画は貼らない。「同じシリーズの前世代」は別製品。
                   無ければ embeds を省略する
-               画像ファイルの転載は絶対にしない。
+
+            7-2. 動画が見つからない記事には、公式サイトの製品画像を引用する。
+               a. 引用元は「公式」に限る。メーカーの公式製品ページ・公式プレスルーム、
+                  または Kickstarter / Indiegogo / Makuake のプロジェクトページのみ。
+                  他のニュースサイトが載せている画像は使わない（転載になる）
+               b. 画像URLを WebFetch で叩いて実在を確認する。404 のURLは書かない
+               c. front matter に次の2つを書く。thumbnail_credit は必須:
+                    thumbnail: https://.../product.jpg
+                    thumbnail_credit: メーカー名 公式製品ページ
+               d. sources にも当該ページのURLを入れる
+               e. 透かしや他媒体のロゴが入った画像は使わない。人物が主題の画像も避ける
+               条件の詳細は docs/PLAYBOOK.md の「3.5 画像をどう用意するか」にある。
+
+               画像ファイルをダウンロードして public/ や content/ に置くことは絶対にしない。
+               URLを書いて権利者のサーバーを参照するだけにする。
 
             8. 記事を3本書く。ファイル名は content/posts/<TODAY>-<slug>.md
                front matter: title / slug / keyword / category / date / kicker / tags / embeds / sources
