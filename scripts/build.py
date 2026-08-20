@@ -158,7 +158,14 @@ def analytics(s: dict) -> str:
 def head(site: dict, title: str, desc: str, url_path: str, extra: str = "",
          image: str = "ogp/default.png") -> str:
     s = site["site"]
-    img_url = f"{s['base_url'].rstrip('/')}/{image.lstrip('/')}"
+    # image が外部URL（公式サイトの製品画像）ならそのまま使う。
+    # 自社生成のアイキャッチだけがサイト相対パスで渡ってくる。
+    is_ext_img = image.startswith(("http://", "https://"))
+    img_url = image if is_ext_img else f"{s['base_url'].rstrip('/')}/{image.lstrip('/')}"
+    # 寸法は自社生成画像（1200x630 固定）のときだけ書く。
+    # 外部画像は実寸が分からず、誤った値を書くとカードの描画が崩れる。
+    dims = ('<meta property="og:image:width" content="1200">' '<meta property="og:image:height" content="630">')
+    img_dims = "" if is_ext_img else dims
     _p = "" if url_path in ("index.html", "/") else url_path.lstrip("/")
     full_url = f"{s['base_url'].rstrip('/')}/{_p}"
     return f"""<!DOCTYPE html>
@@ -176,9 +183,7 @@ def head(site: dict, title: str, desc: str, url_path: str, extra: str = "",
 <meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:url" content="{html.escape(full_url)}">
 <meta property="og:locale" content="{s.get('locale', 'ja_JP')}">
-<meta property="og:image" content="{html.escape(img_url)}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image" content="{html.escape(img_url)}">{img_dims}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="{html.escape(img_url)}">
 <link rel="icon" type="image/svg+xml" href="{u('assets/favicon.svg')}">
@@ -554,7 +559,9 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
         head(site, f"{p.get('seo_title') or p['title']} — {s['title']}", p["excerpt"], p["path"],
              ld + ('\n<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
                    if needs_x else ""),
-             image=f"ogp/{p['slug']}.png")
+             # thumbnail は外部URLのまま、生成アイキャッチはサイト相対で渡す
+             image=(str(p["thumbnail"]) if p.get("thumbnail")
+                    else f"ogp/{p['slug']}.png"))
         + header(site)
         + f"""
 <main class="wrap article-wrap">
