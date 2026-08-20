@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+from urllib.parse import quote
 import re
 import shutil
 import sys
@@ -90,6 +91,48 @@ def parse_post(path: Path) -> dict | None:
 
 
 # ────────────────────────────── テンプレート ──────────────────────────────
+def affiliate_url(s: dict, url: str, merchant: str) -> tuple[str, bool]:
+    """商品URLをアフィリエイトリンクに変換する。
+
+    もしもアフィリエイトは提携先ごとにリンク形式が違うため、site.yaml に
+    テンプレート（{url} が商品URLの位置）を持たせて差し替える方式にしている。
+    無効・テンプレート未設定・対象外の提携先なら素のURLをそのまま返す。
+    戻り値: (URL, アフィリエイトリンクか)
+    """
+    aff = s.get("affiliate") or {}
+    if not aff.get("enabled"):
+        return url, False
+    tmpl = str(aff.get(f"moshimo_{merchant}") or "").strip()
+    if not tmpl or "{url}" not in tmpl:
+        return url, False
+    return tmpl.replace("{url}", quote(url, safe="")), True
+
+
+def alternatives_section(s: dict, p: dict) -> tuple[str, bool]:
+    """「今すぐ買える代替品」セクション。
+
+    クラファン案件は出荷が先で技適も未取得のことが多い。読者が実際に取れる行動を
+    示すのが本来の目的で、アフィリエイトはその副産物として置く。
+    リンクが無効でもセクション自体は出す（編集上の価値はリンクと無関係のため）。
+    戻り値: (HTML, アフィリエイトリンクを含むか)
+    """
+    items = [x for x in (p.get("alternatives") or []) if x.get("name") and x.get("url")]
+    if not items:
+        return "", False
+    has_aff = False
+    rows = []
+    for x in items:
+        link, is_aff = affiliate_url(s, str(x["url"]), str(x.get("merchant") or "amazon"))
+        has_aff = has_aff or is_aff
+        why = f'<p class="alt-why">{html.escape(str(x["why"]))}</p>' if x.get("why") else ""
+        rows.append(
+            f'<li class="alt-item"><a href="{html.escape(link)}" rel="nofollow sponsored noopener" '
+            f'target="_blank">{html.escape(str(x["name"]))}</a>{why}</li>')
+    label = ('<span class="alt-ad">広告</span>' if has_aff else "")
+    return (f'<section class="alts"><h2>今すぐ買える代替品{label}</h2>'
+            f'<ul>{"".join(rows)}</ul></section>', has_aff)
+
+
 def analytics(s: dict) -> str:
     """アクセス解析のタグを出す。設定が空なら何も出さない（外部スクリプトを読み込まない）。
 
@@ -495,6 +538,14 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
             f'<p>{html.escape(str(x["a"]))}</p></div>' for x in faq)
         faq_html = f'<section class="faq"><h2>よくある質問</h2>{rows}</section>'
 
+    alts_html, has_aff = alternatives_section(s, p)
+    # ステマ規制。アフィリエイトリンクがある記事は、本文の先頭で広告を含む旨を示す。
+    # 「サイトのどこかに書いてある」では足りないため、記事ごとに出す。
+    disclosure = ""
+    if has_aff:
+        text = str((s.get("affiliate") or {}).get("disclosure") or "この記事にはアフィリエイト広告を含みます")
+        disclosure = f'<p class="ad-notice">{html.escape(text)}</p>'
+
     ld = "".join(
         f'<script type="application/ld+json">{json.dumps(d, ensure_ascii=False, separators=(",", ":"))}</script>'
         for d in (article_ld, breadcrumb_ld, faq_ld) if d)
@@ -511,11 +562,13 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
     <p class="eyebrow"><a href="{u("category/" + cat['slug'] + ".html")}"><span class="eyebrow-code">{cat.get('code','---')}</span>{html.escape(cat['label'])}</a></p>
     <h1 class="article-title">{html.escape(p['title'])}</h1>
     {f'<p class="article-lede">{html.escape(p["kicker"])}</p>' if p.get('kicker') else ''}
+    {disclosure}
     <p class="article-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>{p['reading_min']} MIN READ</p>
     {hero_block}
     <div class="prose">{p['body_html']}</div>
     {embeds_html}
-    {faq_html}
+    {alts_html}
+  {faq_html}
   {sources}
   </article>
   {rel_html}
@@ -811,6 +864,16 @@ img{max-width:100%}
 .src-pub{font-family:var(--mono);color:var(--ink-3);font-size:11.5px;margin-left:9px}
 .sources-note{font-size:12.5px;color:var(--ink-3);line-height:1.85;margin:0}
 
+.ad-notice{max-width:var(--measure);margin:0 0 18px;padding:7px 11px;border:1px solid var(--rule-2);
+  border-radius:3px;color:var(--ink-3);font-family:var(--mono);font-size:11px;letter-spacing:.03em}
+.alts{max-width:var(--measure);margin:44px 0 0;padding-top:24px;border-top:1px solid var(--rule)}
+.alts h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 16px;display:flex;align-items:center;gap:8px}
+.alt-ad{background:var(--rule-2);color:var(--ink-2);padding:2px 6px;border-radius:2px;letter-spacing:.1em}
+.alts ul{list-style:none;padding:0;margin:0}
+.alt-item{margin:0 0 16px}
+.alt-item>a{font-size:15px;line-height:1.6}
+.alt-why{margin:4px 0 0;color:var(--ink-2);font-size:13.5px;line-height:1.8}
 .faq{max-width:var(--measure);margin:44px 0 0;padding-top:24px;border-top:1px solid var(--rule)}
 .faq h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
 .faq-item{margin:0 0 18px}

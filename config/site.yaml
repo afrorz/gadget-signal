@@ -17,9 +17,18 @@ site:
   cf_analytics_token: "a114276e3ee147cc9bcdc2edf684b9fc"
   # GA4 を併用する場合のみ。G- で始まる測定ID
   analytics_id: ""
+  # アフィリエイト（もしもアフィリエイト経由）。
+  # enabled: false のあいだは代替品セクションは出るがリンクは素のURLのままで、
+  # 広告表示も出さない。提携が通ってからテンプレートを貼って true にする。
   affiliate:
     enabled: false
-    amazon_tag: ""
+    # もしもの管理画面で発行されるリンクをそのまま貼り、商品URLの部分を {url} に置き換える。
+    # 例: https://af.moshimo.com/af/c/click?a_id=0000000&p_id=00&pc_id=00&pl_id=0000&url={url}
+    moshimo_amazon: ""
+    moshimo_rakuten: ""
+    moshimo_yahoo: ""
+    # 景品表示法（ステマ規制）で必須の表示。リンクがある記事に自動で出る。
+    disclosure: この記事にはアフィリエイト広告を含みます
 
 categories:
   smartphone:

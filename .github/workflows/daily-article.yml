@@ -100,7 +100,7 @@ jobs:
 
             8. 記事を3本書く。ファイル名は content/posts/<TODAY>-<slug>.md
                front matter: title / seo_title / slug / keyword / category / date / kicker /
-                             tags / faq / embeds / sources
+                             tags / alternatives / faq / embeds / sources
                - keyword はアイキャッチに入る短い語（製品名など全角10文字程度まで）
 
                【SEO】seo_title を必ず書く。検索結果に出るのはこちら。
@@ -110,6 +110,20 @@ jobs:
                  - title は長くてよい（記事ページの見出しとして情報量を優先する）
                  例: title  「Framework Laptop 12がIntel Core Series 3とThunderbolt 4に対応、DIY版549ドルから」
                      seo_title 「Framework Laptop 12がCore Series 3に対応、549ドルから」
+
+               【読者価値】alternatives を書く。クラファン案件と国内未発売品は必須。
+               「面白いが今は買えない」で終わらせず、読者が今日取れる行動を示す。
+                 - 同じ用途を満たし、日本で今すぐ買える製品を1〜2件挙げる
+                 - why に「なぜ代替になるか」を1行で書く。技適取得済み・国内保証など
+                 - url は Amazon.co.jp か楽天の商品ページ。**実在を WebFetch で確認する**
+                 - merchant は amazon / rakuten / yahoo のいずれか
+                 - 適切な代替品が無ければ書かない。無理に埋めない
+               書式:
+                 alternatives:
+                   - name: 製品名
+                     why: 技適取得済みで国内在庫あり。同じ用途を今日から使える。
+                     url: https://www.amazon.co.jp/dp/XXXXXXXXXX
+                     merchant: amazon
 
                【SEO】faq を2〜4問付ける。FAQPage 構造化データとして出力され、
                検索結果に Q&A が展開されることがある。ガジェットは以下が定番クエリ:
