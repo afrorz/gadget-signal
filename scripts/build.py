@@ -89,6 +89,18 @@ def parse_post(path: Path) -> dict | None:
 
 
 # ────────────────────────────── テンプレート ──────────────────────────────
+def analytics(s: dict) -> str:
+    """site.yaml に analytics_id があれば GA4 のタグを出す。空なら何も出さない。"""
+    gid = str(s.get("analytics_id") or "").strip()
+    if not gid:
+        return ""
+    return (f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>'
+            "<script>window.dataLayer=window.dataLayer||[];"
+            "function gtag(){dataLayer.push(arguments);}"
+            "gtag('js',new Date());"
+            f"gtag('config','{gid}');</script>")
+
+
 def head(site: dict, title: str, desc: str, url_path: str, extra: str = "",
          image: str = "ogp/default.png") -> str:
     s = site["site"]
@@ -121,6 +133,7 @@ def head(site: dict, title: str, desc: str, url_path: str, extra: str = "",
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{u('assets/style.css')}">
+{analytics(s)}
 {extra}
 </head>
 <body>"""

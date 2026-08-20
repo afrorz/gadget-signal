@@ -30,6 +30,21 @@ gh repo create <あなたのアカウント>/gadget-signal --public --source=. -
 ### 検索エンジンへの登録
 
 - Google Search Console にプロパティを追加 → `sitemap.xml` を送信
+
+### アクセス解析（Google Analytics）
+
+`config/site.yaml` の `analytics_id` に GA4 の測定ID（`G-` で始まる）を入れるだけ。
+全ページの `<head>` に gtag のタグが入る。空文字のあいだは**タグを一切出さない**ので、
+設定するまでは外部スクリプトを読み込まない。
+
+```yaml
+analytics_id: "G-XXXXXXXXXX"
+```
+
+測定IDの取り方: https://analytics.google.com/ → 管理 → プロパティを作成 →
+データストリーム → ウェブ → URL に `https://gadgetterminal.com` を入れる → 測定IDが表示される。
+
+計測を止めたいときは `analytics_id` を空に戻して再ビルドすれば、タグごと消える。
 - 最初の 2〜3 週間はインデックスされない。焦らない
 
 ---
