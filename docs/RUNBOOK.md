@@ -142,6 +142,37 @@ affiliate:
 直契約は審査が厳しく、承認後に一定期間内の適格販売が必要になる。アクセスが立ち上がる前に
 申し込むとその条件を満たせない恐れがあるため、まずは審査の通りやすいもしもで始める。
 
+### X への自動投稿
+
+公開が終わると `deploy.yml` の `notify` ジョブが `scripts/xpost.py` を実行し、
+その日の記事を X に投稿する。**認証情報が未設定なら何もせず終了する**ので、
+設定するまでは無効のまま。投稿に失敗しても公開は巻き戻らない。
+
+必要な GitHub Secrets（リポジトリの Settings → Secrets and variables → Actions）:
+
+```
+X_API_KEY
+X_API_SECRET
+X_ACCESS_TOKEN
+X_ACCESS_TOKEN_SECRET
+```
+
+X の開発者ポータル（https://developer.x.com/）でアプリを作り、
+**Read and Write 権限**にしてから4値を発行する。Read のみだと投稿が 403 で落ちる。
+
+投稿済みの記事は `data/xposted.json` に記録され、二重投稿を防ぐ。
+このファイルは Actions が自動でコミットする。
+
+投稿文の確認は手元でできる（認証情報は不要）:
+
+```bash
+python scripts/xpost.py --dry-run --date 2026-08-19
+```
+
+**x-poster アプリとは意図的に分離している。** 認証情報を共有すると
+別アカウントへ誤投稿する危険があるため（`x-poster/DESIGN.md` の事故記録を参照）。
+詳しい理由は `scripts/xpost.py` の冒頭に書いてある。
+
 ### 広告表示（景品表示法・ステマ規制）
 
 2023年10月施行の規制により、**アフィリエイトリンクを含む記事には広告である旨の明示が必要。**
