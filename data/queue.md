@@ -64,10 +64,9 @@ Actions タブ →「毎朝の記事下書きを作って公開」→ Run workfl
 
   切り口: この案件は**Makuake経由で日本で買える**ので「買えるか」は論点にならない。代わりに**技適**を主軸にする。Wi-Fi/Bluetooth搭載機を日本国内で使うには技術基準適合証明が必要だが、**2026-08-22時点でプロジェクトページに技適の記載が見当たらない**。ただし**「技適が無い」と断定してはいけない** —— 記載が見当たらないだけで、取得済みだが未記載の可能性がある。「ページ上で確認できない」という事実だけを書き、読者には実行者への確認を促す形にする。あわせて、代理店経由の海外製品を応援購入するとはどういうことか（サポート窓口・保証・技適の責任の所在）を具体的に書く。
 
-- https://www.indiegogo.com/projects/hoverair/versa-this-pocket-camera-can-fly HOVERAir VERSA。手持ちカメラとしても自律飛行ドローンとしても使える2-in-1、230g・3軸ジンバル・17.5段ダイナミックレンジ・36km/h。2026-08-22時点でHK$2,745,867・448人、期間2026-08-18〜2026-10-17。**金額はHKD建て（USDではない）。記事化時に必ず再取得して確認すること。** 最重要の切り口は日本の航空法——**100g以上は機体登録が義務なので230gのこれは対象**。登録・リモートID・飛行禁止空域（人口集中地区、空港周辺）・目視外や夜間の扱いまで具体的に書く。加えて技適。「買えるか」より「買った後に日本で合法に飛ばせるか」が読者の知りたいこと。alternatives には国内で買えるDJI Neo等の登録不要/対象機を。
-
-- https://www.kickstarter.com/projects/litejam/litejam-neo-a1-the-worlds-first-rgb-acoustic-guitar フレットボードがLEDで光って運指を教えるアコギ/ベース。2026-08-22時点で目標$10,000に対し$460,102（4601%）・982人・締切2026-09-11。切り口は「日本から買えるか」を厚めに——(1)Bluetooth接続なら技適が論点、(2)ギター本体という大物の国際送料と関税、(3)楽器は個体差があるのに現物を試せないクラファンのリスク。国内の代替として、既に日本で買える学習系ギター/アプリ（Fender Play系、ローランド/YAMAHAのスマート楽器など）を alternatives に。
-
 ## 処理済み
+
+- 2026-08-23 https://www.indiegogo.com/projects/hoverair/versa-this-pocket-camera-can-fly → content/posts/2026-08-23-hoverair-versa-indiegogo.md
+- 2026-08-23 https://www.kickstarter.com/projects/litejam/litejam-neo-a1-the-worlds-first-rgb-acoustic-guitar → content/posts/2026-08-23-litejam-neo-acoustic-a1.md
 
 ## 保留
