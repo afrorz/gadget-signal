@@ -1,0 +1,710 @@
+{
+  "date": "2026-08-23",
+  "generated_at": "2026-08-23T05:51:25.409611+09:00",
+  "stats": {
+    "fetched": 729,
+    "unique": 689,
+    "new": 370,
+    "clusters": 356,
+    "selected": 30
+  },
+  "items": [
+    {
+      "id": "91108d1af84a3d59",
+      "title": "Samsung Galaxy S26 FE leaks in unboxing video",
+      "url": "https://www.gsmarena.com/samsung_galaxy_s26_fe_leaks_in_unboxing_video-news-74285.php",
+      "canonical": "https://www.gsmarena.com/samsung_galaxy_s26_fe_leaks_in_unboxing_video-news-74285.php",
+      "summary": "Samsung is unveiling the Galaxy S26 FE on August 27, and ahead of that we've already seen the device in a hands-on video as well as plenty of leaked renders. How about a quick unboxing video? Would you like to see that, even if the handset isn't official yet? Well, if you do, here you go. As you'd expect from a Samsung, you only get the phone, some documentation, a SIM ejector tool, and a USB-C ca",
+      "published": "2026-08-21T20:31:02+00:00",
+      "source_id": "gsmarena",
+      "source": "GSMArena",
+      "category": "smartphone",
+      "tier": 1,
+      "kind": "news",
+      "score": 22,
+      "reasons": [
+        "+5 hands-on",
+        "+4 unveil",
+        "+3 official",
+        "+3 tier1",
+        "+3 fresh",
+        "+4 2媒体が報道"
+      ],
+      "also_covered_by": [
+        "Android Authority"
+      ],
+      "related_urls": [
+        "https://www.androidauthority.com/samsung-galaxy-s26-fe-unboxing-video-leak-3701540/"
+      ]
+    },
+    {
+      "title": "Makuake｜【分けて、貼れる】TWS搭載 2-in-1スピーカー。好きな場所がステレオ空間に｜Makuake（マクアケ）",
+      "url": "https://www.makuake.com/project/stromberg-twin-2/",
+      "summary": "リターン品の配送が完了するまで、ABUTILONはStromberg Twin-2の日本における独占販売権を有する正規代理店です。本プロジェクトは、メーカー正規ルートにおける日本国内初販売となります。詳細に関しては、ページ下部のリスク＆チャレンジをご確認ください。Twin-2があれば、分離した2つのユニットをそれぞれ別の端末に接続して使うこともできます。Twin-2、1セットで2台のスピーカーとし",
+      "image": "https://static.makuake.com/upload/project/53292/main_53292.png?version=1787407868&amp;width=690&amp;height=388",
+      "published": "2026-08-26T00:00:00+00:00",
+      "source_id": "makuake",
+      "source": "Makuake",
+      "category": "weird",
+      "tier": 1,
+      "kind": "crowdfunding",
+      "id": "b2c5c96a69c89445",
+      "canonical": "https://www.makuake.com/project/stromberg-twin-2",
+      "score": 20,
+      "reasons": [
+        "+6 makuake",
+        "+8 クラファン発",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "64a403053b38bf12",
+      "title": "Bazzite 44 Gets Official Handheld Launch With Slew of Updates",
+      "url": "https://www.techpowerup.com/351814/bazzite-44-gets-official-handheld-launch-with-slew-of-updates",
+      "canonical": "https://www.techpowerup.com/351814/bazzite-44-gets-official-handheld-launch-with-slew-of-updates",
+      "summary": "The development team of Bazzite, the immutable, gaming-focussed Linux distribution based on Fedora Silverblue, has just announced the official stable launch of the handheld version of Bazzite 44, which brings with it a host of new updates for gaming handhelds from the likes of Lenovo, ASUS, MSI, and Ayaneo, among others. This release comes after the Bazzite-deck image release was delayed in late-A",
+      "published": "2026-08-21T22:32:16+00:00",
+      "source_id": "techpowerup",
+      "source": "TechPowerUp",
+      "category": "pc",
+      "tier": 1,
+      "kind": "news",
+      "score": 19,
+      "reasons": [
+        "+3 announced",
+        "+3 launch",
+        "+3 official",
+        "+4 handheld",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "32c131594946ac22",
+      "title": "Here's the Sony Xperia 10 VIII that's expected to launch next week",
+      "url": "https://www.gsmarena.com/sony_xperia_10_viii_design-news-74294.php",
+      "canonical": "https://www.gsmarena.com/sony_xperia_10_viii_design-news-74294.php",
+      "summary": "Sony recently announced a launch event for August 25, starting at 11 AM Japan time. Sony said it's for a new Xperia product but didn't reveal its name. This Xperia product is expected to be the Xperia 10 VIII, which was recently spotted on Geekbench and has now appeared in an official-looking image shared by Android Headlines. The image below shows the Xperia 10 VIII's design, which is almost iden",
+      "published": "2026-08-22T12:05:02+00:00",
+      "source_id": "gsmarena",
+      "source": "GSMArena",
+      "category": "smartphone",
+      "tier": 1,
+      "kind": "news",
+      "score": 19,
+      "reasons": [
+        "+3 announced",
+        "+3 launch",
+        "+3 official",
+        "+4 japan",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "d21ad6b1defe56a0",
+      "title": "New Sony Xperia phone appears in first image leak",
+      "url": "https://www.notebookcheck.net/New-Sony-Xperia-phone-appears-in-first-image-leak.1375613.0.html",
+      "canonical": "https://www.notebookcheck.net/New-Sony-Xperia-phone-appears-in-first-image-leak.1375613.0.html",
+      "summary": "Fall is approaching fast, and with it, the second Xperia phone of the year. Sony has already announced a launch event for next week and just a few days before that, we’re now getting our first look at the Sony Xperia 10 VIII in an official looking promo image. Seems like Sony fans are not getting any major changes with this years Xperia midranger.",
+      "published": "2026-08-22T12:20:00+00:00",
+      "source_id": "notebookcheck_smart",
+      "source": "Notebookcheck (Smartphone)",
+      "category": "smartphone",
+      "tier": 2,
+      "kind": "news",
+      "score": 17,
+      "reasons": [
+        "+4 first look",
+        "+3 announced",
+        "+3 launch",
+        "+3 official",
+        "+1 tier2",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "2d270097010565a9",
+      "title": "Acer Nitro 30 PC Launches With Radeon RX 9070 XT and Ryzen 7 8700F for $3,700",
+      "url": "https://www.techpowerup.com/351798/acer-nitro-30-pc-launches-with-radeon-rx-9070-xt-and-ryzen-7-8700f-for-usd-3-700",
+      "canonical": "https://www.techpowerup.com/351798/acer-nitro-30-pc-launches-with-radeon-rx-9070-xt-and-ryzen-7-8700f-for-usd-3-700",
+      "summary": "Acer has officially launched the Nitro 30 PC in Japan , a 28 L gaming PC powered by the AMD Ryzen 7 8700F and the AMD Radeon RX 9070 XT, as the latest in its line-up of Nitro pre-built gaming desktops . The chassis features a semi-closed front panel with an edgy Nitro logo emblazoned on the front, and it has a tempered glass side panel to show off the internals. For now, it seems as though the Nit",
+      "published": "2026-08-21T16:26:45+00:00",
+      "source_id": "techpowerup",
+      "source": "TechPowerUp",
+      "category": "pc",
+      "tier": 1,
+      "kind": "news",
+      "score": 16,
+      "reasons": [
+        "+3 launch",
+        "+3 official",
+        "+4 japan",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "077de47f81a2d416",
+      "title": "Pixel 11 Pro Fold's durability test shows Google made the same mistake four times in a row",
+      "url": "https://www.gsmarena.com/google_pixel_11_pro_fold_durability_test-news-74296.php",
+      "canonical": "https://www.gsmarena.com/google_pixel_11_pro_fold_durability_test-news-74296.php",
+      "summary": "About two weeks ago, Zack from YouTube channel JerryRigEverything subjected the Samsung Galaxy Z Fold8 to a durability test. Now, he’s put the Google Pixel 11 Pro Fold through one too. [#InlinePriceWidget,14874,1#] Zack starts with his usual scratch tests on the Pixel 11 Pro Fold, followed by the flame test. He then pours sand and grit over the foldable. Finally, Zack performs the bend test on the",
+      "published": "2026-08-22T15:05:02+00:00",
+      "source_id": "gsmarena",
+      "source": "GSMArena",
+      "category": "smartphone",
+      "tier": 1,
+      "kind": "news",
+      "score": 16,
+      "reasons": [
+        "+3 price",
+        "+3 foldable",
+        "+3 tier1",
+        "+3 fresh",
+        "+4 2媒体が報道"
+      ],
+      "also_covered_by": [
+        "Notebookcheck (Smartphone)"
+      ],
+      "related_urls": [
+        "https://www.notebookcheck.net/Three-times-more-durable-Google-Pixel-11-Pro-Fold-breaks-during-durability-test.1375448.0.html"
+      ]
+    },
+    {
+      "id": "581ecb431ba1ef6f",
+      "title": "Espressif Systems releases a Linux BSP developer preview for ESP32-S31 RISC-V microprocessor",
+      "url": "https://www.cnx-software.com/2026/08/22/espressif-systems-releases-a-linux-bsp-developer-preview-for-esp32-s31-risc-v-microprocessor/",
+      "canonical": "https://www.cnx-software.com/2026/08/22/espressif-systems-releases-a-linux-bsp-developer-preview-for-esp32-s31-risc-v-microprocessor",
+      "summary": "The ESP32-S31 microprocessor is getting Linux support from Espressif Systems. The ESP32-S31 dual-core RISC-V microprocessor was first unveiled in March, two ESP32-S31 development boards followed in May, and mass production was announced a few weeks ago. The new RISC-V chip features an MMU (Memory Management Unit), which makes Linux much easier to handle, and the development boards also come with 1",
+      "published": "2026-08-22T04:26:56+00:00",
+      "source_id": "cnx_software",
+      "source": "CNX Software",
+      "category": "weird",
+      "tier": 2,
+      "kind": "news",
+      "score": 15,
+      "reasons": [
+        "+4 review",
+        "+4 unveil",
+        "+3 announced",
+        "+1 tier2",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "3a95a39460d1d7c3",
+      "title": "Minisforum M2 Pro-358H mini PC goes on sale with Core Ultra X7, Arc B390, up to 24 TB of storage",
+      "url": "https://www.notebookcheck.net/Minisforum-M2-Pro-358H-mini-PC-goes-on-sale-with-Core-Ultra-X7-Arc-B390-up-to-24-TB-of-storage.1375729.0.html",
+      "canonical": "https://www.notebookcheck.net/Minisforum-M2-Pro-358H-mini-PC-goes-on-sale-with-Core-Ultra-X7-Arc-B390-up-to-24-TB-of-storage.1375729.0.html",
+      "summary": "Minisforum has opened orders for the M2 Pro-358H at $1,439 and €1,519, eight months after unveiling the M2 Pro at CES 2026. For now, one configuration is listed — it carries 32 GB of LPDDR5X RAM at 7,467 MT/s rather than the announced 96 GB at 9,600 MT/s.",
+      "published": "2026-08-22T19:03:00+00:00",
+      "source_id": "notebookcheck_smart",
+      "source": "Notebookcheck (Smartphone)",
+      "category": "smartphone",
+      "tier": 2,
+      "kind": "news",
+      "score": 15,
+      "reasons": [
+        "+4 unveil",
+        "+3 announced",
+        "+4 mini pc",
+        "+1 tier2",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "07269ce9d6ca1264",
+      "title": "Pixel 11 Pro Fold is changing how I multitask on a foldable with ‘App Handles’ [Gallery]",
+      "url": "https://9to5google.com/2026/08/21/google-pixel-11-pro-fold-android-app-handles-multitasking-feature/",
+      "canonical": "https://9to5google.com/2026/08/21/google-pixel-11-pro-fold-android-app-handles-multitasking-feature",
+      "summary": "Previewed in a recent Canary build, Google’s Pixel 11 Pro Fold ships with the “App Handles” multitasking feature that’s a welcome addition to the experience.",
+      "published": "2026-08-21T17:15:00+00:00",
+      "source_id": "9to5google",
+      "source": "9to5Google",
+      "category": "smartphone",
+      "tier": 2,
+      "kind": "news",
+      "score": 14,
+      "reasons": [
+        "+4 review",
+        "+3 ships",
+        "+3 foldable",
+        "+1 tier2",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "9d82cc2778d671f1",
+      "title": "Hisense A10 is an E Ink smartphone with a detachable LCD screen on the back",
+      "url": "https://liliputing.com/hisense-a10-is-an-e-ink-smartphone-with-a-detachable-lcd-screen-on-the-back/",
+      "canonical": "https://liliputing.com/hisense-a10-is-an-e-ink-smartphone-with-a-detachable-lcd-screen-on-the-back",
+      "summary": "Just days after Bigme launched a crowdfunding campaign for a dual-screen smartphone with an E Ink display on one side and an LCD display on the other, Hisense has introduced a phone with similar features. But there&#8217;s one key thing that sets the Hisense A10 apart from the Bigme HiBreak Dual: the LCD display for the [&#8230;] The post Hisense A10 is an E Ink smartphone with a detachable LCD sc",
+      "published": "2026-07-20T17:40:05+00:00",
+      "source_id": "liliputing",
+      "source": "Liliputing",
+      "category": "weird",
+      "tier": 1,
+      "kind": "news",
+      "score": 13,
+      "reasons": [
+        "+6 crowdfunding",
+        "+2 campaign",
+        "+3 launch",
+        "+4 e ink",
+        "+3 tier1",
+        "-5 stale"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "df51539faa8ab96f",
+      "title": "Marvel Fighting: Tokon Souls Underperforms in Launch Week",
+      "url": "https://www.techpowerup.com/351805/marvel-fighting-tokon-souls-underperforms-in-launch-week",
+      "canonical": "https://www.techpowerup.com/351805/marvel-fighting-tokon-souls-underperforms-in-launch-week",
+      "summary": "Marvel Fighting: Tōkon Souls has seemingly had a bit of a rough start to life, with the game's launch kicking off with optimization complaints on top of PSN issues . Now, just over two weeks after the game's August 6 launch, numbers have come out that indicate its commercial performance may also be a bit of a disappointment. According to @GameDataLibrary on X, an account that tracks Japanese game ",
+      "published": "2026-08-21T17:08:16+00:00",
+      "source_id": "techpowerup",
+      "source": "TechPowerUp",
+      "category": "pc",
+      "tier": 1,
+      "kind": "news",
+      "score": 13,
+      "reasons": [
+        "+3 launch",
+        "+4 japan",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "3ee1aa0fcf4f8e70",
+      "title": "When is Apple Pay coming to your Walmart? Here’s the full schedule",
+      "url": "https://9to5mac.com/2026/08/21/when-is-apple-pay-coming-to-your-walmart-heres-the-full-schedule/",
+      "canonical": "https://9to5mac.com/2026/08/21/when-is-apple-pay-coming-to-your-walmart-heres-the-full-schedule",
+      "summary": "Earlier today, Walmart officially announced it will finally start rolling out Apple Pay after holding out for more than a decade. When will Apple Pay come to your Walmart location? I got my hands on the full launch plan with all that information…",
+      "published": "2026-08-21T20:31:01+00:00",
+      "source_id": "9to5mac",
+      "source": "9to5Mac",
+      "category": "smartphone",
+      "tier": 2,
+      "kind": "news",
+      "score": 13,
+      "reasons": [
+        "+3 announced",
+        "+3 launch",
+        "+3 official",
+        "+1 tier2",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "18cb86293de9e9f1",
+      "title": "PlayStation 6 Handheld for $600 Seems Impossible",
+      "url": "https://www.techpowerup.com/351819/playstation-6-handheld-for-usd-600-seems-impossible",
+      "canonical": "https://www.techpowerup.com/351819/playstation-6-handheld-for-usd-600-seems-impossible",
+      "summary": "There have been a number of leaks about the upcoming PlayStation 6 handheld, including purported details about the Canis APU slated to arrive in the handheld with Zen 6 LP cores . Despite this, we still haven't seen any real indication of a price for the new handheld, even though there are already BOM estimates floating around for the PS6 living room console . According to ubiquitous hardware leak",
+      "published": "2026-08-22T03:02:22+00:00",
+      "source_id": "techpowerup",
+      "source": "TechPowerUp",
+      "category": "pc",
+      "tier": 1,
+      "kind": "news",
+      "score": 13,
+      "reasons": [
+        "+3 price",
+        "+4 handheld",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "0af8f2b38ffadf16",
+      "title": "Nothing OS 5.0 to be unveiled on August 25th, check if your phone is eligible",
+      "url": "https://www.gizmochina.com/2026/08/22/nothing-os-5-0-to-be-unveiled-on-august-25th-check-eligible-phones/",
+      "canonical": "https://www.gizmochina.com/2026/08/22/nothing-os-5-0-to-be-unveiled-on-august-25th-check-eligible-phones",
+      "summary": "Nothing has officially confirmed that its next major software release, Nothing OS 5.0, will be introduced on August 25th. The announcement event is set to take place at 11:00 AM BST (3:30 PM IST), where the brand is expected to reveal the release timeline and highlight major upgrades and new features. The timing of the [&#8230;] The post Nothing OS 5.0 to be unveiled on August 25th, check if your ",
+      "published": "2026-08-22T05:21:03+00:00",
+      "source_id": "gizmochina",
+      "source": "Gizmochina",
+      "category": "weird",
+      "tier": 1,
+      "kind": "news",
+      "score": 13,
+      "reasons": [
+        "+4 unveil",
+        "+3 official",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "907046db47403d9e",
+      "title": "iQOO 16 launch timeframe tipped, a mini tablet to tag along",
+      "url": "https://www.gizmochina.com/2026/08/22/iqoo-16-launch-timeframe-tipped-a-mini-tablet-to-tag-along/",
+      "canonical": "https://www.gizmochina.com/2026/08/22/iqoo-16-launch-timeframe-tipped-a-mini-tablet-to-tag-along",
+      "summary": "Digital Chat Station has shared a new update on iQOO’s next flagship lineup, and this time we have a launch month attached. According to the tipster, the iQOO 16 and a new iQOO mini tablet will launch in September. Both devices are expected to be among the first products to be powered by Qualcomm’s sixth-generation [&#8230;] The post iQOO 16 launch timeframe tipped, a mini tablet to tag along appe",
+      "published": "2026-08-22T05:40:26+00:00",
+      "source_id": "gizmochina",
+      "source": "Gizmochina",
+      "category": "weird",
+      "tier": 1,
+      "kind": "news",
+      "score": 13,
+      "reasons": [
+        "+3 launch",
+        "+3 tier1",
+        "+3 fresh",
+        "+4 2媒体が報道"
+      ],
+      "also_covered_by": [
+        "Notebookcheck (Smartphone)"
+      ],
+      "related_urls": [
+        "https://www.notebookcheck.net/iQoo-compact-tablet-tipped-for-September-launch-alongside-iQoo-16.1375810.0.html"
+      ]
+    },
+    {
+      "id": "d538a0a8fc9ad18a",
+      "title": "Lenovo Legion C700 launching on August 25 with Tencent START, 7.82″ 120Hz IPS LCD screen",
+      "url": "https://www.gizmochina.com/2026/08/22/lenovo-legion-c700-launching-on-august-25/",
+      "canonical": "https://www.gizmochina.com/2026/08/22/lenovo-legion-c700-launching-on-august-25",
+      "summary": "Lenovo is getting ready to launch a new lightweight handheld aimed squarely at cloud gaming and game streaming. The company has confirmed that the Legion C700 will drop on August 25 in China. Unlike most Windows handhelds that try to run heavy games locally, this one is built for streaming and cloud play, so it [&#8230;] The post Lenovo Legion C700 launching on August 25 with Tencent START, 7.82&#",
+      "published": "2026-08-22T06:23:28+00:00",
+      "source_id": "gizmochina",
+      "source": "Gizmochina",
+      "category": "weird",
+      "tier": 1,
+      "kind": "news",
+      "score": 13,
+      "reasons": [
+        "+3 launch",
+        "+4 handheld",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "280ad01878feb315",
+      "title": "Pixel Camera 11 debuts refreshed quick access controls and a handy Launch mode",
+      "url": "https://www.androidauthority.com/pixel-camera-11-new-quick-access-dials-launch-mode-3701763/",
+      "canonical": "https://www.androidauthority.com/pixel-camera-11-new-quick-access-dials-launch-mode-3701763",
+      "summary": "The upgrade is easy to miss.",
+      "published": "2026-08-22T17:35:11+00:00",
+      "source_id": "androidauthority",
+      "source": "Android Authority",
+      "category": "smartphone",
+      "tier": 1,
+      "kind": "news",
+      "score": 13,
+      "reasons": [
+        "+3 launch",
+        "+3 tier1",
+        "+3 fresh",
+        "+4 2媒体が報道"
+      ],
+      "also_covered_by": [
+        "9to5Google"
+      ],
+      "related_urls": [
+        "https://9to5google.com/2026/08/21/google-pixel-camera-11-update-launch-mode-quick-access/"
+      ]
+    },
+    {
+      "id": "49620d4dcce037c9",
+      "title": "vivo T5 5G teased with a 3D curved display ahead of launch",
+      "url": "https://www.gsmarena.com/vivo_t5_5g_coming_soon-news-74295.php",
+      "canonical": "https://www.gsmarena.com/vivo_t5_5g_coming_soon-news-74295.php",
+      "summary": "vivo's T5 series has five smartphones, including the T5 4G, which was unveiled in May. The brand will soon unveil the T5 5G as the next member of the lineup, as it has started teasing the smartphone in India. vivo says the T5 5G will have \"Faster AI with GenAI Ready NPU\" and a 3D curved display. The vivo T5 5G is also advertised to have an \"Ultra Slim Body,\" but its exact slimness isn't known. A v",
+      "published": "2026-08-22T18:05:02+00:00",
+      "source_id": "gsmarena",
+      "source": "GSMArena",
+      "category": "smartphone",
+      "tier": 1,
+      "kind": "news",
+      "score": 13,
+      "reasons": [
+        "+4 unveil",
+        "+3 launch",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "d3adfe9dea174ff0",
+      "title": "(PR) Razer Introduces the Huntsman V3 Pro Low-profile Tenkeyless 8 KHz Keyboard",
+      "url": "https://www.techpowerup.com/351787/razer-introduces-the-huntsman-v3-pro-low-profile-tenkeyless-8-khz-keyboard",
+      "canonical": "https://www.techpowerup.com/351787/razer-introduces-the-huntsman-v3-pro-low-profile-tenkeyless-8-khz-keyboard",
+      "summary": "Razer, the leading global lifestyle brand for gamers, today announced the Razer Huntsman V3 Pro Low-profile Tenkeyless 8KHz, the world's first low-profile analog optical esports keyboard. Designed with and made for competitive players, the keyboard delivers the speed, precision, and control of Razer's flagship esports technologies in an ultra-slim form factor built for all-day comfort. It sets the",
+      "published": "2026-08-21T09:43:07+00:00",
+      "source_id": "techpowerup",
+      "source": "TechPowerUp",
+      "category": "pc",
+      "tier": 1,
+      "kind": "news",
+      "score": 12,
+      "reasons": [
+        "+3 announced",
+        "+3 keyboard",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "66c8f5c069cf05fc",
+      "title": "MNT Station lets you repurpose a MNT Reform mainboard as a mini PC",
+      "url": "https://liliputing.com/mnt-station-lets-you-repurpose-a-mnt-reform-mainboard-as-a-mini-pc/",
+      "canonical": "https://liliputing.com/mnt-station-lets-you-repurpose-a-mnt-reform-mainboard-as-a-mini-pc",
+      "summary": "Five years after starting to ship its first open source, modular laptop, the folks at MNT Research are expanding beyond laptops (and mini-laptops) with the introduction of a new mini PC called the MNT Station. It&#8217;s basically a compact desktop computer that could be used as a PC, network-attached storage device, media center, or for other [&#8230;] The post MNT Station lets you repurpose a MN",
+      "published": "2026-08-21T14:12:10+00:00",
+      "source_id": "liliputing",
+      "source": "Liliputing",
+      "category": "weird",
+      "tier": 1,
+      "kind": "news",
+      "score": 12,
+      "reasons": [
+        "+4 mini pc",
+        "+2 open source",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "4d3d904e7976a8b8",
+      "title": "AULA Releases F87S 8K Tri-Mode TKL Mechanical Gaming Keyboard Series",
+      "url": "https://www.techpowerup.com/351803/aula-releases-f87s-8k-tri-mode-tkl-mechanical-gaming-keyboard-series",
+      "canonical": "https://www.techpowerup.com/351803/aula-releases-f87s-8k-tri-mode-tkl-mechanical-gaming-keyboard-series",
+      "summary": "AULA has launched the F87S mechanical gaming keyboard, an updated version of the F87 TKL keyboard launched in 2023. The new model retains the compact TKL design while adding an 8,000 Hz polling rate, a gasket-mounted construction, hot-swap switches, and a 10,000mAh battery (it actually uses two 5,000mAh batteries). The gasket-mounted structure is combined with a five-layer damping system consistin",
+      "published": "2026-08-21T17:07:54+00:00",
+      "source_id": "techpowerup",
+      "source": "TechPowerUp",
+      "category": "pc",
+      "tier": 1,
+      "kind": "news",
+      "score": 12,
+      "reasons": [
+        "+3 launch",
+        "+3 keyboard",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "638b42bfd1129413",
+      "title": "Redmi Note 17 Pro and Redmi Note 17 Pro Max India launch date leaks along with pricing details",
+      "url": "https://www.gsmarena.com/redmi_note_17_pro_and_redmi_note_17_pro_max_india_launch_date_leaks_along_with_pricing_details-news-74290.php",
+      "canonical": "https://www.gsmarena.com/redmi_note_17_pro_and_redmi_note_17_pro_max_india_launch_date_leaks_along_with_pricing_details-news-74290.php",
+      "summary": "The Redmi Note 17 series is getting its global launch next week, but that won't include India. Over there, the Redmi Note 17 is already official, while today new details about the Redmi Note 17 Pro and Redmi Note 17 Pro Max have surfaced. According to a new report, the two Pro devices will be made official for India on September 15. The Pro is said to have a 9,000 mAh battery just like its Chinese",
+      "published": "2026-08-22T02:01:01+00:00",
+      "source_id": "gsmarena",
+      "source": "GSMArena",
+      "category": "smartphone",
+      "tier": 1,
+      "kind": "news",
+      "score": 12,
+      "reasons": [
+        "+3 launch",
+        "+3 official",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "3e0927950f792c0c",
+      "title": "Huawei to soon launch 20000mAh power bank with 100W charging",
+      "url": "https://www.huaweicentral.com/huawei-to-soon-launch-20000mah-power-bank-with-100w-charging/",
+      "canonical": "https://www.huaweicentral.com/huawei-to-soon-launch-20000mah-power-bank-with-100w-charging",
+      "summary": "Huawei will soon introduce a new 20000mAh power bank for its devices with 100W fast charging. The company has listed the new product on the 3C site and may launch it officially for compatible handsets in the coming weeks. Let&#8217;s dive into the details. As per the 3C database listing, Huawei has certified the 20000mAh [&#8230;] The post Huawei to soon launch 20000mAh power bank with 100W chargi",
+      "published": "2026-08-22T12:42:09+00:00",
+      "source_id": "huaweicentral",
+      "source": "Huawei Central",
+      "category": "smartphone",
+      "tier": 3,
+      "kind": "news",
+      "score": 12,
+      "reasons": [
+        "+3 launch",
+        "+3 official",
+        "+3 power bank",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "b68908c8ffece3dc",
+      "title": "Resonance: A Plague Tale Legacy Cracked Ahead of Launch-Pirates Warn Against Malware",
+      "url": "https://www.techpowerup.com/351827/resonance-a-plague-tale-legacy-cracked-ahead-of-launch-pirates-warn-against-malware",
+      "canonical": "https://www.techpowerup.com/351827/resonance-a-plague-tale-legacy-cracked-ahead-of-launch-pirates-warn-against-malware",
+      "summary": "Despite the official launch being weeks away, it appears as though Resonance: A Plague Tale Legacy has already leaked and been cracked , with playable builds available online—much like the recent Forza Horizon 6 leak that saw pirates gain access to the game ahead of buyers of the $120 Deluxe Edition . This game leak comes a full week ahead of the game's full launch on Thursday, August 27, and is c",
+      "published": "2026-08-22T16:25:46+00:00",
+      "source_id": "techpowerup",
+      "source": "TechPowerUp",
+      "category": "pc",
+      "tier": 1,
+      "kind": "news",
+      "score": 12,
+      "reasons": [
+        "+3 launch",
+        "+3 official",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "867947028bc54145",
+      "title": "RAWM Reveals Leviathan V4 GT: Magnetic Switch Gaming Mouse for Under $100",
+      "url": "https://www.techpowerup.com/351829/rawm-reveals-leviathan-v4-gt-magnetic-switch-gaming-mouse-for-under-usd-100",
+      "canonical": "https://www.techpowerup.com/351829/rawm-reveals-leviathan-v4-gt-magnetic-switch-gaming-mouse-for-under-usd-100",
+      "summary": "RAWM, the Chinese peripherals manufacturer, has officially revealed the Leviathan V4 GT, a new lightweight wireless gaming mouse that is slated to feature hybrid optical-magnetic mouse switches, much like Keychron's recent G6 HE . The Leviathan V4 GT is based on the same Logitech G Pro X shape that the brand has featured in its other gaming mouse launches, and the V4 GT even has a similar black-an",
+      "published": "2026-08-22T17:35:57+00:00",
+      "source_id": "techpowerup",
+      "source": "TechPowerUp",
+      "category": "pc",
+      "tier": 1,
+      "kind": "news",
+      "score": 12,
+      "reasons": [
+        "+3 launch",
+        "+3 official",
+        "+3 tier1",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "db4a8e3aadd40ab8",
+      "title": "YouTube Premium is getting a price hike of up to 17% across Europe",
+      "url": "https://www.notebookcheck.net/YouTube-Premium-is-getting-a-price-hike-of-up-to-17-across-Europe.1375180.0.html",
+      "canonical": "https://www.notebookcheck.net/YouTube-Premium-is-getting-a-price-hike-of-up-to-17-across-Europe.1375180.0.html",
+      "summary": "Following earlier price hikes in April in the US, YouTube Premium is set to get more expensive across multiple European nations and additionally Singapore, requiring subscribers to agree to the new rates by October 10 to avoid service interruptions.",
+      "published": "2026-08-22T04:20:00+00:00",
+      "source_id": "notebookcheck_smart",
+      "source": "Notebookcheck (Smartphone)",
+      "category": "smartphone",
+      "tier": 2,
+      "kind": "news",
+      "score": 11,
+      "reasons": [
+        "+3 price",
+        "+1 tier2",
+        "+3 fresh",
+        "+4 2媒体が報道"
+      ],
+      "also_covered_by": [
+        "9to5Google"
+      ],
+      "related_urls": [
+        "https://9to5google.com/2026/08/21/youtube-premium-price-hike-europe-other-regions/"
+      ]
+    },
+    {
+      "id": "3ddb0dad5425e487",
+      "title": "GPD justifies $1,750 starting price for the AMD Strix Halo-powered Win Max 3 gaming handheld",
+      "url": "https://www.notebookcheck.net/GPD-justifies-1-750-starting-price-for-the-AMD-Strix-Halo-powered-Win-Max-3-gaming-handheld.1374081.0.html",
+      "canonical": "https://www.notebookcheck.net/GPD-justifies-1-750-starting-price-for-the-AMD-Strix-Halo-powered-Win-Max-3-gaming-handheld.1374081.0.html",
+      "summary": "GPD has stated that the $1,750 starting price for its upcoming UMPC-gaming handheld is the best they could have offered for the product. Given just how pricey its competitors' offerings are, along with ever-increasing components prices, GPD's statements are hard to argue against.",
+      "published": "2026-08-22T04:29:00+00:00",
+      "source_id": "notebookcheck_smart",
+      "source": "Notebookcheck (Smartphone)",
+      "category": "smartphone",
+      "tier": 2,
+      "kind": "news",
+      "score": 11,
+      "reasons": [
+        "+3 price",
+        "+4 handheld",
+        "+1 tier2",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "e694aa50d842aa1f",
+      "title": "Honor officially unveils 13-inch tablet with 10,100mAh battery",
+      "url": "https://www.notebookcheck.net/Honor-officially-unveils-13-inch-tablet-with-10-100mAh-battery.1375445.0.html",
+      "canonical": "https://www.notebookcheck.net/Honor-officially-unveils-13-inch-tablet-with-10-100mAh-battery.1375445.0.html",
+      "summary": "Honor has officially expanded the Pad X10 series with a new model: the Honor Pad X10 Pro Max. It features a larger display than the 11-inch Pad X10 and the 11.5-inch Pad X10 Pro.",
+      "published": "2026-08-22T05:54:00+00:00",
+      "source_id": "notebookcheck_smart",
+      "source": "Notebookcheck (Smartphone)",
+      "category": "smartphone",
+      "tier": 2,
+      "kind": "news",
+      "score": 11,
+      "reasons": [
+        "+4 unveil",
+        "+3 official",
+        "+1 tier2",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    },
+    {
+      "id": "8479d8eb67a29e64",
+      "title": "Lenovo confirms August 25 launch for its new C700 cloud handheld",
+      "url": "https://www.notebookcheck.net/Lenovo-confirms-August-25-launch-for-its-new-C700-cloud-handheld.1375457.0.html",
+      "canonical": "https://www.notebookcheck.net/Lenovo-confirms-August-25-launch-for-its-new-C700-cloud-handheld.1375457.0.html",
+      "summary": "Lenovo has confirmed the Legion C700, a lightweight cloud gaming handheld, will launch in China on August 25. Unlike most Windows handhelds built to run games locally, the C700 is designed around streaming through Tencent START, with Lenovo saying titles such as Black Myth: Wukong can hit 60 FPS with end-to-end latency under 10ms.",
+      "published": "2026-08-22T11:34:00+00:00",
+      "source_id": "notebookcheck_smart",
+      "source": "Notebookcheck (Smartphone)",
+      "category": "smartphone",
+      "tier": 2,
+      "kind": "news",
+      "score": 11,
+      "reasons": [
+        "+3 launch",
+        "+4 handheld",
+        "+1 tier2",
+        "+3 fresh"
+      ],
+      "also_covered_by": [],
+      "related_urls": []
+    }
+  ]
+}
