@@ -2,7 +2,9 @@ name: 毎朝の記事下書きを作って公開
 
 on:
   schedule:
-    # 14:00 UTC = 23:00 JST（収集 22:30 JST の後。日中の利用枠と競合させないため夜に寄せている）
+    # 01:00 UTC = 10:00 JST（収集 09:30 JST の後）
+    - cron: "0 1 * * *"
+    # 14:00 UTC = 23:00 JST（収集 22:30 JST の後）
     - cron: "0 14 * * *"
   workflow_dispatch:
     inputs:
@@ -30,8 +32,11 @@ jobs:
             --allowedTools "WebSearch,WebFetch,Read,Write,Edit,Glob,Grep,Bash"
           prompt: |
             あなたは合同会社スタープラチナが運営する海外ガジェットメディア「Gadget Terminal」
-            (https://gadgetterminal.com/) の編集担当です。今日ぶんの記事を3本書いて、
+            (https://gadgetterminal.com/) の編集担当です。記事を2本書いて、
             content/posts/ にコミットしてください。
+
+            この媒体は1日2回（JST 10:00 と 23:00）記事を出しており、1回につき2本、
+            1日あわせて4本が目標です。あなたはそのうちの1回ぶんを担当します。
 
             ## この媒体の軸
             業界ニュースではなく「ガジェットそのもの」を扱う。とくにクラウドファンディング発の
@@ -58,7 +63,7 @@ jobs:
                    この場合は下の (2)(3)(4) もダイジェストも見ない。
 
                (2) **キュー** — data/queue.md を読む。`## 未処理` の下にある `- ` で始まる行が
-                   あれば、上から順に最大3本まで取る。行の URL 以降に書かれた文字列は
+                   あれば、上から順に最大2本まで取る（1回の実行で書くのは2本のため）。行の URL 以降に書かれた文字列は
                    切り口の注文なので、記事に反映する。
 
                (3) 上の 3 で読んだダイジェスト
@@ -79,7 +84,7 @@ jobs:
                - https://hackaday.com/blog/feed/
 
             5. 候補を選ぶ。本数は 3-2 で決めた優先順位に従う（手動指定があるときは
-               指定された本数、無ければ3本）。製品そのものの話を優先。カテゴリ
+               指定された本数、無ければ2本）。製品そのものの話を優先。カテゴリ
                （smartphone / pc / weird）が偏らないようにする。
                content/posts/ の既存ファイルを見て重複を避ける。
                ただし 3-2 (1)(2) で指定されたネタは、カテゴリの偏りを理由に外さない。
@@ -91,12 +96,15 @@ jobs:
                  - 日本で使えるかが論点になるか（技適・電圧・国内流通）
                逆に、調査レポートや訴訟・市場動向は検索需要が細いので優先度を下げる。
 
-               【重要】content/posts/ に既に <TODAY> の日付の記事がある場合の扱い:
-               - この実行が定時実行 (event_name = schedule) なら、本日分は作成済みとみなし、
-                 「本日分は作成済みのため終了」とログに出して何もせず終了してよい。
-               - この実行が手動実行 (event_name = workflow_dispatch) なら、既存記事とは
-                 別の製品を選んで3本追記する。既に記事があることを理由に終了してはいけない。
-               この実行の event_name は「${{ github.event_name }}」である。
+               【重要】本数の決め方。**「今日の記事があるから終了」と判断してはいけない。**
+               1日2回走るので、朝の2本が既にあるのが正常な状態である。
+               `ls content/posts/<TODAY>-*.md | wc -l` で今日の本数を数えて:
+               - **4本以上ある** → 「本日分は達成済みのため終了」と出して何もせず終了
+               - **4本未満** → 既存の記事とは別の製品を選んで **2本** 書く
+                 （朝が失敗して0本でも、1回の実行で3本以上書かない）
+               手動実行 (event_name = workflow_dispatch) は本数に関わらず必ず書く。
+               この実行の event_name は「${{ github.event_name }}」、
+               cron は「${{ github.event.schedule }}」（01:00=朝 / 14:00=夜）である。
 
             6. 元記事を必ず読む。見出しだけで書かない。
                スペック・価格・日付・調達額を正確に抜き出す。
@@ -156,9 +164,9 @@ jobs:
                画像ファイルをダウンロードして public/ や content/ に置くことは絶対にしない。
                URLを書いて権利者のサーバーを参照するだけにする。
 
-            8. 記事を3本書く。ファイル名は content/posts/<TODAY>-<slug>.md
-               front matter: title / seo_title / slug / keyword / category / date / kicker /
-                             tags / alternatives / faq / embeds / sources
+            8. 記事を書く。ファイル名は content/posts/<TODAY>-<slug>.md
+               front matter: title / seo_title / x_hook / slug / keyword / category / date /
+                             kicker / tags / alternatives / faq / embeds / sources
                - keyword はアイキャッチに入る短い語（製品名など全角10文字程度まで）
 
                【SEO】seo_title を必ず書く。検索結果に出るのはこちら。
@@ -168,6 +176,15 @@ jobs:
                  - title は長くてよい（記事ページの見出しとして情報量を優先する）
                  例: title  「Framework Laptop 12がIntel Core Series 3とThunderbolt 4に対応、DIY版549ドルから」
                      seo_title 「Framework Laptop 12がCore Series 3に対応、549ドルから」
+
+               【X用】x_hook を必ず書く。X に投稿するときの一言目になる。
+                 - 全角60字以内。**seo_title を使い回さない。**
+                   検索に効く言葉と、指を止める言葉は別物である
+                 - 製品名から書き始めない。読者が「え？」と思う事実から入る
+                 - 数字・重量・価格・法規制など、具体的な一点に絞る。形容詞で盛らない
+                 - 「話題」「すごい」「衝撃」「ヤバい」は使わない
+                 例: seo_title 「HOVERAir VERSAが230gで登場、手持ちと自律飛行の2-in-1」
+                     x_hook    「230gのカメラが、勝手に飛ぶ。ただし日本で飛ばすには国への登録が要る」
 
                【読者価値】alternatives を書く。クラファン案件と国内未発売品は必須。
                「面白いが今は買えない」で終わらせず、読者が今日取れる行動を示す。
@@ -208,7 +225,7 @@ jobs:
                   → front matter のYAMLが壊れていないか。英語タイトルにコロン(:)が含まれる場合は
                     必ずダブルクォートで囲むこと。ここが最も壊れやすい。
                b. pip install -r requirements.txt --break-system-packages -q && python3 scripts/build.py
-                  → 「記事 N本」の N が、既存記事数＋3 になっていることを確認
+                  → 「記事 N本」の N が、書いた本数だけ増えていることを確認
                どちらかが失敗したら記事を直して、通るまでコミットしない。
 
             10. 検証が通ったら git でコミットして main に push する。

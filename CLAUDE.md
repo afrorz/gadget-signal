@@ -61,8 +61,16 @@ python scripts/build.py                 # content/posts → public/
 python scripts/build.py --serve         # http://localhost:8000 で確認
 ```
 
-収集は `.github/workflows/collect.yml` が毎晩 JST 22:30 に自動実行し、`data/digest/` にコミットする。
-その30分後の JST 23:00 に `daily-article.yml` が記事3本を生成する（Claude の利用枠を消費するため、日中を避けて夜に寄せてある）。
+収集と記事生成は1日2回、GitHub Actions が自動で回す。**1回につき2本、1日あわせて4本**が目標。
+
+| JST | 何が動くか | Claude の利用枠 |
+|---|---|---|
+| 09:30 | `collect.yml` 収集（`--dry-run`。seen.json は温存する） | 使わない |
+| 10:00 | `daily-article.yml` 記事2本 → 公開まで | **消費する** |
+| 22:30 | `collect.yml` 収集（seen.json を更新） | 使わない |
+| 23:00 | `daily-article.yml` 記事2本 → 公開まで | **消費する** |
+
+朝の収集を `--dry-run` にしているのは、collect.py が「取得できた新規アイテム全部」を seen.json に記録するため。朝に記録すると、その日の候補がまとめて既読になり夜に回せる候補が減る。記録は夜にまとめて行う。
 **手元で collect.py を回す前に `git pull` すれば、その日のダイジェストは既にあることが多い。**
 
 ## ディレクトリ
