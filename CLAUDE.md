@@ -75,6 +75,7 @@ python scripts/build.py --serve         # http://localhost:8000 で確認
 | `scripts/build.py` | Markdown → 静的HTML（RSS/sitemap/OGP/構造化データ込み） |
 | `content/posts/*.md` | 記事本体。front matter + Markdown |
 | `data/digest/` | 日次ダイジェスト（.md と .json） |
+| `data/queue.md` | **書きたいネタの置き場。**定期実行がダイジェストより先に消化する |
 | `public/` | ビルド成果物。**手で編集しない** |
 | `docs/PLAYBOOK.md` | 編集方針・記事の型・絶対ルール |
 | `docs/RUNBOOK.md` | 公開設定・トラブル対応 |
