@@ -98,8 +98,27 @@ jobs:
                  別の製品を選んで3本追記する。既に記事があることを理由に終了してはいけない。
                この実行の event_name は「${{ github.event_name }}」である。
 
-            6. 元記事を必ず WebFetch で読む。見出しだけで書かない。
+            6. 元記事を必ず読む。見出しだけで書かない。
                スペック・価格・日付・調達額を正確に抜き出す。
+
+               まず WebFetch を使う。**403 が返る、または本文が取れない場合は Bash の curl に
+               切り替える。** WebFetch の UA を弾くサイトがある（Kickstarter は実測で403、
+               curl に一般的なブラウザの UA を付ければ 200 で取れる）:
+
+                 curl -4 -sL -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36" "<URL>" -o /tmp/p.html
+
+               取得できたら python3 で必要な箇所を抜く。**HTMLを全部読もうとしない**
+               （数十万バイトある）。og:title / og:description / og:image のメタタグと、
+               必要な数値だけを正規表現で拾う。
+
+               Kickstarter の場合、HTML 内に埋め込まれた JSON（実体参照 `&quot;` で
+               エスケープされている）に正確な値がある。使えるキー:
+                 goal / pledged / backers_count / state / deadline / currency / country
+               - deadline は UNIX 時刻（秒）。JST に直して「◯月◯日まで」と書く
+               - state が "live" でなければ募集は終了している。その事実を記事に必ず書く
+               - 達成率は pledged ÷ goal。**取得時点の値であることを明記する**
+
+               curl でも取れないソースは諦めて別のネタに移る。推測で書かない。
 
             7. 各記事に実物が見える動画を1本つける。
                a. WebSearch で「<製品名> YouTube review」「<製品名> hands-on」等を検索

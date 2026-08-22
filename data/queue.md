@@ -33,7 +33,7 @@ Actions タブ →「毎朝の記事下書きを作って公開」→ Run workfl
 
 ## 未処理
 
-（ここに URL を足す）
+- https://www.kickstarter.com/projects/litejam/litejam-neo-a1-the-worlds-first-rgb-acoustic-guitar フレットボードがLEDで光って運指を教えるアコギ/ベース。2026-08-22時点で目標$10,000に対し$460,102（4601%）・982人・締切2026-09-11。切り口は「日本から買えるか」を厚めに——(1)Bluetooth接続なら技適が論点、(2)ギター本体という大物の国際送料と関税、(3)楽器は個体差があるのに現物を試せないクラファンのリスク。国内の代替として、既に日本で買える学習系ギター/アプリ（Fender Play系、ローランド/YAMAHAのスマート楽器など）を alternatives に。
 
 ## 処理済み
 
