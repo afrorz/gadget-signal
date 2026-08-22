@@ -21,7 +21,7 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           show_full_output: true
           claude_args: |
-            --max-turns 80
+            --max-turns 120
             --allowedTools "WebSearch,WebFetch,Read,Write,Edit,Glob,Grep,Bash"
           prompt: |
             あなたは合同会社スタープラチナが運営する海外ガジェットメディア「Gadget Terminal」
@@ -116,7 +116,10 @@ jobs:
                  - 同じ用途を満たし、日本で今すぐ買える製品を1〜2件挙げる
                  - why に「なぜ代替になるか」を1行で書く。技適取得済み・国内保証など
                  - url は Amazon.co.jp か楽天の商品ページ。**実在を WebFetch で確認する**
-                 - merchant は amazon / rakuten / yahoo のいずれか
+                 - merchant は amazon / rakuten / yahoo のいずれか。
+                   **URL のドメインと一致していること。** amazon なら amazon.co.jp、
+                   rakuten なら rakuten.co.jp。メーカー直販など対応ストア以外を
+                   紹介する場合は merchant を書かない（素のリンクとして出力される）
                  - 適切な代替品が無ければ書かない。無理に埋めない
                書式:
                  alternatives:

@@ -20,7 +20,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 import re
 import shutil
 import sys
@@ -91,16 +91,37 @@ def parse_post(path: Path) -> dict | None:
 
 
 # ────────────────────────────── テンプレート ──────────────────────────────
+# merchant が指すストアのドメイン。ここに無いものはアフィリエイト変換しない。
+MERCHANT_HOSTS = {
+    "amazon": ("amazon.co.jp",),
+    "rakuten": ("rakuten.co.jp",),
+    "yahoo": ("yahoo.co.jp", "paypaymall.yahoo.co.jp"),
+}
+
+
 def affiliate_url(s: dict, url: str, merchant: str) -> tuple[str, bool]:
     """商品URLをアフィリエイトリンクに変換する。
 
     もしもアフィリエイトは提携先ごとにリンク形式が違うため、site.yaml に
     テンプレート（{url} が商品URLの位置）を持たせて差し替える方式にしている。
     無効・テンプレート未設定・対象外の提携先なら素のURLをそのまま返す。
+
+    **merchant と URL のドメインが一致しない場合も変換しない。**
+    例えば merchant: amazon なのに URL がメーカー直販だと、Amazon の
+    アフィリエイトリンクに別ストアのURLを包むことになり、成果も発生せず
+    リンクとしても不正になる。書き手の注意に頼らず、ここで弾く。
     戻り値: (URL, アフィリエイトリンクか)
     """
     aff = s.get("affiliate") or {}
     if not aff.get("enabled"):
+        return url, False
+    hosts = MERCHANT_HOSTS.get(merchant)
+    if not hosts:
+        return url, False
+    host = urlparse(url).netloc.lower()
+    if not any(host == h or host.endswith("." + h) for h in hosts):
+        print(f"! merchant={merchant} だが URL のドメインは {host}。"
+              f"アフィリエイト変換せず素のリンクにする")
         return url, False
     tmpl = str(aff.get(f"moshimo_{merchant}") or "").strip()
     if not tmpl or "{url}" not in tmpl:
@@ -122,7 +143,8 @@ def alternatives_section(s: dict, p: dict) -> tuple[str, bool]:
     has_aff = False
     rows = []
     for x in items:
-        link, is_aff = affiliate_url(s, str(x["url"]), str(x.get("merchant") or "amazon"))
+        # merchant 未指定は「対応ストアではない」の意味。amazon に寄せない。
+        link, is_aff = affiliate_url(s, str(x["url"]), str(x.get("merchant") or ""))
         has_aff = has_aff or is_aff
         why = f'<p class="alt-why">{html.escape(str(x["why"]))}</p>' if x.get("why") else ""
         rows.append(
