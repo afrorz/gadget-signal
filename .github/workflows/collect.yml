@@ -2,10 +2,10 @@ name: 日次ダイジェスト収集
 
 on:
   schedule:
-    # JST 09:30 (UTC 00:30) — 朝の記事生成(10:00 JST)の30分前
-    - cron: "30 0 * * *"
-    # JST 22:30 (UTC 13:30) — 夜の記事生成(23:00 JST)の30分前
-    - cron: "30 13 * * *"
+    # JST 05:30 (UTC 20:30) — 記事生成(06:00 JST)の30分前。
+    # この時刻にしているのは、海外ガジェットのニュースが米国の営業時間
+    # (= 日本の深夜〜早朝) に出るため。朝5:30なら米国の丸1日ぶんを拾える。
+    - cron: "30 20 * * *"
   workflow_dispatch:
 
 permissions:
@@ -25,21 +25,7 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: 収集
-        # 朝の実行だけ --dry-run にする。**これは「実行しない」という意味ではない。**
-        # collect.py の --dry-run は seen.json を更新しないだけで、ダイジェストは通常どおり書く。
-        #
-        # なぜ必要か: collect.py は「取得できた新規アイテム全部」を seen.json に記録する
-        # （上位30件だけではない）。朝に記録してしまうと、その日に拾えた候補が
-        # まとめて既読になり、夜の生成に回せる候補が激減する。朝に使うのは2本ぶんだけなので、
-        # 残りは夜にもう一度出せる状態にしておきたい。
-        # 記録は夜の実行にまとめて任せる。
-        run: |
-          if [ "${{ github.event.schedule }}" = "30 0 * * *" ]; then
-            echo "朝の収集: seen.json は更新しない"
-            python3 scripts/collect.py --top 30 --dry-run
-          else
-            python3 scripts/collect.py --top 30
-          fi
+        run: python3 scripts/collect.py --top 30
 
       - name: ダイジェストをコミット
         run: |
