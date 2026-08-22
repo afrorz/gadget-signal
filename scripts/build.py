@@ -267,6 +267,22 @@ def footer(site: dict) -> str:
 </html>"""
 
 
+def jp(text) -> str:
+    """日本語を、句読点でしか改行させない形に組む。
+
+    CSS は日本語の文節を知らないので、放っておくと「日本／語」のような位置で割れる。
+    句読点で区切った塊を inline-block にすると、その塊の途中では改行されなくなる。
+    塊と塊の間には <wbr>（幅ゼロの改行可能点）を置いて、そこだけで折り返させる。
+
+    塊が1行に収まらないほど長い場合は、塊の内部でも折り返す。そこは CSS 側の
+    word-break:auto-phrase に任せる（対応ブラウザなら文節単位で折り返す）。
+    """
+    parts = [x for x in re.split(r"(?<=[、。！？])", str(text)) if x]
+    if len(parts) <= 1:
+        return html.escape(str(text))
+    return "<wbr>".join(f'<span class="nb">{html.escape(x)}</span>' for x in parts)
+
+
 def card(site: dict, p: dict, featured: bool = False) -> str:
     key = p.get("category", "misc")
     cat = site["categories"].get(key, {"label": "その他", "slug": "misc", "code": "---"})
@@ -285,7 +301,7 @@ def card(site: dict, p: dict, featured: bool = False) -> str:
     <time datetime="{p['date']}">{p['date'].replace('-', '.')}</time>
     <span class="card-read">{p['reading_min']}MIN</span>
   </p>
-  <h2 class="card-title">{'<span class="pick-badge">PICK</span>' if p.get('pick') else ''}<a href="{u(p['path'])}">{html.escape(p['title'])}</a></h2>
+  <h2 class="card-title">{'<span class="pick-badge">PICK</span>' if p.get('pick') else ''}<a href="{u(p['path'])}">{jp(p['title'])}</a></h2>
   <p class="card-excerpt">{html.escape(blurb)}</p>
 </article>"""
 
@@ -396,8 +412,8 @@ def render_index(site: dict, posts: list[dict], page: int = 1, total_pages: int 
 <main class="wrap">
   <section class="hero{'' if page <= 1 else ' hero-sm'}">
     <p class="eyebrow">{'DEPARTURES / 海外発' if page <= 1 else f'ARCHIVE / {page} of {total_pages}'}</p>
-    <h1 class="hero-title">{html.escape(s['tagline']) if page <= 1 else f'過去の記事 — {page}ページ目'}</h1>
-    <p class="hero-sub">{html.escape(s['description']) if page <= 1 else ''}</p>
+    <h1 class="hero-title">{jp(s['tagline']) if page <= 1 else f'過去の記事 — {page}ページ目'}</h1>
+    <p class="hero-sub">{jp(s['description']) if page <= 1 else ''}</p>
   </section>
   {body}
 </main>"""
@@ -417,7 +433,7 @@ def render_category(site: dict, key: str, cat: dict, posts: list[dict]) -> str:
   <section class="hero hero-sm cat-{key}">
     <p class="eyebrow">{cat.get('code','---')} / CATEGORY</p>
     <h1 class="hero-title">{html.escape(cat['label'])}</h1>
-    <p class="hero-sub">{html.escape(cat['description'])}</p>
+    <p class="hero-sub">{jp(cat['description'])}</p>
   </section>
   <section class="grid">{body}</section>
 </main>"""
@@ -628,8 +644,8 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
 <main class="wrap article-wrap">
   <article class="article cat-{p.get("category", "misc")}">
     <p class="eyebrow"><a href="{u("category/" + cat['slug'] + ".html")}"><span class="eyebrow-code">{cat.get('code','---')}</span>{html.escape(cat['label'])}</a></p>
-    <h1 class="article-title">{html.escape(p['title'])}</h1>
-    {f'<p class="article-lede">{html.escape(p["kicker"])}</p>' if p.get('kicker') else ''}
+    <h1 class="article-title">{jp(p['title'])}</h1>
+    {f'<p class="article-lede">{jp(p["kicker"])}</p>' if p.get('kicker') else ''}
     {f'<aside class="pick-callout"><p class="pick-callout-head">編集部ピックアップ</p><p class="pick-callout-note">{html.escape(p["pick_note"])}</p></aside>' if p.get('pick') and p.get('pick_note') else (f'<p class="pick-callout pick-callout-bare">編集部ピックアップ<span>運営者が選んだガジェットです</span></p>' if p.get('pick') else '')}
     {disclosure}
     <p class="article-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>{p['reading_min']} MIN READ</p>
@@ -793,6 +809,12 @@ img{max-width:100%}
 .hero-title{font-family:var(--disp);font-size:clamp(22px,2.9vw,34px);line-height:1.4;
   margin:0 0 10px;font-weight:700;letter-spacing:-.015em;max-width:30em}
 .hero-sub{margin:0;color:var(--ink-2);font-size:13px;max-width:44em;line-height:1.75}
+/* 日本語の折り返し。塊の途中では改行させない（jp() が挿入する span） */
+.nb{display:inline-block}
+/* 対応ブラウザ（Chromium系）では、塊の内部も文節単位で折り返す */
+.hero-title,.hero-sub,.article-title,.article-lede,.card-title,.card-excerpt,
+.pick-title,.pick-note,.pick-callout-note,.board-title,.prose p,.prose li,
+.faq dt,.faq dd{word-break:auto-phrase}
 
 /* ── 出発案内板 ─────────────────────────────── */
 .board{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-bottom:40px}
