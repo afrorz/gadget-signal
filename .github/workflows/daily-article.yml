@@ -118,7 +118,19 @@ jobs:
                - state が "live" でなければ募集は終了している。その事実を記事に必ず書く
                - 達成率は pledged ÷ goal。**取得時点の値であることを明記する**
 
+               **Indiegogo は curl でも数値が取れない**（JSで描画するため）。HTML内の
+               `window.__INITIAL_STATE__ = {...}` に JSON があるので、そこから読む:
+                 - projectState.statistics.backersCount / fundsGathered
+                 - projectContext.project.campaignStart / campaignEnd / name
+                 - **通貨は checkoutCurrencies[0].shortName を必ず確認する。**
+                   USD とは限らない（実測例: HOVERAir VERSA は HKD 建て）。
+                   通貨を確認せず「$」を付けると金額が数倍ずれる。
+               抜き出しは `json.JSONDecoder().raw_decode()` を使うと確実
+               （`window.__INITIAL_STATE__ =` の直後から復号する）。
+
                curl でも取れないソースは諦めて別のネタに移る。推測で書かない。
+               **とくに金額・重量・日付は、取れた値だけを書く。** 取れなければその項目を
+               書かない。「約」「とみられる」で埋めるのは捏造と同じ扱いにする。
 
             7. 各記事に実物が見える動画を1本つける。
                a. WebSearch で「<製品名> YouTube review」「<製品名> hands-on」等を検索
