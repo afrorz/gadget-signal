@@ -86,6 +86,10 @@ def parse_post(path: Path) -> dict | None:
     meta.setdefault("tags", [])
     meta["keyword"] = meta.get("keyword") or (meta["tags"][0] if meta.get("tags") else "")
     meta.setdefault("sources", [])
+    # 編集部ピックアップ: 運営者が自分で選んだ記事。自動選定と区別する。
+    # pick_note は運営者自身の言葉なので、あれば必ず本人の文章として扱う（要約も改変もしない）。
+    meta["pick"] = bool(meta.get("pick"))
+    meta["pick_note"] = str(meta.get("pick_note") or "").strip()
     meta.setdefault("excerpt", re.sub(r"<[^>]+>", "", meta["body_html"])[:110].strip() + "…")
     return meta
 
@@ -281,7 +285,7 @@ def card(site: dict, p: dict, featured: bool = False) -> str:
     <time datetime="{p['date']}">{p['date'].replace('-', '.')}</time>
     <span class="card-read">{p['reading_min']}MIN</span>
   </p>
-  <h2 class="card-title"><a href="{u(p['path'])}">{html.escape(p['title'])}</a></h2>
+  <h2 class="card-title">{'<span class="pick-badge">PICK</span>' if p.get('pick') else ''}<a href="{u(p['path'])}">{html.escape(p['title'])}</a></h2>
   <p class="card-excerpt">{html.escape(blurb)}</p>
 </article>"""
 
@@ -320,6 +324,40 @@ def pager(current: int, total: int) -> str:
     return f'<nav class="pager" aria-label="ページ送り">{prev}<span class="pager-nums">{nums}</span>{nxt}</nav>'
 
 
+def picks_section(site: dict, posts: list[dict], limit: int = 3) -> str:
+    """編集部ピックアップ。運営者が自分で選んだ記事だけを並べる。
+
+    自動選定の記事と同じ見た目にすると意味が消えるので、カードではなく
+    「選んだ理由」を主役にした横並びの形にしている。pick_note が無い記事は
+    kicker で代替するが、**本人の言葉があるときは必ずそちらを出す**。
+    """
+    picked = [p for p in posts if p.get("pick")][:limit]
+    if not picked:
+        return ""
+    rows = []
+    for p in picked:
+        img, is_ext = card_image(p)
+        note = p.get("pick_note") or p.get("kicker") or p["excerpt"]
+        own = bool(p.get("pick_note"))
+        rows.append(f"""
+  <article class="pick">
+    <a class="pick-thumb" href="{u(p['path'])}" aria-hidden="true" tabindex="-1">
+      <img src="{img}" alt="" loading="lazy" width="1200" height="675"
+           onerror="this.onerror=null;this.src='{u("cards/" + p['slug'] + ".png")}'">
+    </a>
+    <div class="pick-body">
+      <h3 class="pick-title"><a href="{u(p['path'])}">{html.escape(p['title'])}</a></h3>
+      <p class="pick-note{' pick-note-own' if own else ''}">{html.escape(note)}</p>
+    </div>
+  </article>""")
+    return f"""
+<section class="picks">
+  <h2 class="picks-head">編集部ピックアップ<span class="picks-sub">運営者が選んだガジェット</span></h2>
+  <div class="picks-list">{''.join(rows)}
+  </div>
+</section>"""
+
+
 def render_index(site: dict, posts: list[dict], page: int = 1, total_pages: int = 1) -> str:
     s = site["site"]
     if not posts:
@@ -335,6 +373,7 @@ def render_index(site: dict, posts: list[dict], page: int = 1, total_pages: int 
   </div>
   {rows}
 </section>
+{picks_section(site, posts)}
 <section class="lead">
   {card(site, lead, featured=True)}
 </section>
@@ -591,6 +630,7 @@ def render_post(site: dict, p: dict, others: list[dict]) -> str:
     <p class="eyebrow"><a href="{u("category/" + cat['slug'] + ".html")}"><span class="eyebrow-code">{cat.get('code','---')}</span>{html.escape(cat['label'])}</a></p>
     <h1 class="article-title">{html.escape(p['title'])}</h1>
     {f'<p class="article-lede">{html.escape(p["kicker"])}</p>' if p.get('kicker') else ''}
+    {f'<aside class="pick-callout"><p class="pick-callout-head">編集部ピックアップ</p><p class="pick-callout-note">{html.escape(p["pick_note"])}</p></aside>' if p.get('pick') and p.get('pick_note') else (f'<p class="pick-callout pick-callout-bare">編集部ピックアップ<span>運営者が選んだガジェットです</span></p>' if p.get('pick') else '')}
     {disclosure}
     <p class="article-meta"><time datetime="{p['date']}">{p['date'].replace('-', '.')}</time><span class="dot"></span>{p['reading_min']} MIN READ</p>
     {hero_block}
@@ -796,6 +836,29 @@ img{max-width:100%}
 }
 
 /* ── カード ─────────────────────────────────── */
+.picks{margin:0 0 40px;padding:22px 0 6px;border-bottom:1px solid var(--rule)}
+.picks-head{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 18px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.picks-sub{font-family:inherit;font-size:12px;letter-spacing:0;text-transform:none;color:var(--ink-3)}
+.picks-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px 28px}
+.pick{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:start}
+.pick-thumb{display:block;overflow:hidden;border-radius:2px;background:var(--surface)}
+.pick-thumb img{width:100%;height:64px;object-fit:cover;display:block}
+.pick-title{font-size:15px;line-height:1.5;margin:0 0 6px;font-weight:600}
+.pick-title a{text-decoration:none;color:inherit}
+.pick-title a:hover{text-decoration:underline}
+.pick-note{font-size:13px;line-height:1.75;color:var(--ink-3);margin:0}
+.pick-note-own{color:var(--ink-2);border-left:2px solid var(--rule);padding-left:10px}
+.pick-badge{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;vertical-align:2px;
+  border:1px solid var(--rule);border-radius:2px;padding:1px 5px;margin-right:8px;color:var(--ink-3)}
+.pick-callout{margin:22px 0 0;padding:14px 16px;background:var(--surface);border-radius:3px}
+.pick-callout-head{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 7px}
+.pick-callout-note{margin:0;font-size:14.5px;line-height:1.85}
+.pick-callout-bare{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-3);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.pick-callout-bare span{font-family:inherit;font-size:12.5px;letter-spacing:0;text-transform:none}
+@media(max-width:520px){.pick{grid-template-columns:72px 1fr}.pick-thumb img{height:48px}}
 .lead{margin-bottom:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
   gap:1px;background:var(--rule);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
